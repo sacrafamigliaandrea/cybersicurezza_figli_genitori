@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Dashboard Docente · Cittadini Digitali (protetta)</title>
+<style>
+  :root{
+    --indigo:#1c4fa0; --indigo-d:#14387a; --teal:#10b6a8; --orange:#ff7a3d;
+    --ink:#1c1633; --muted:#6b6680; --bg:#f5f3fb; --card:#fff;
+    --good:#16a34a; --bad:#e23d52; --warn:#f5a623;
+    --shadow:0 10px 30px rgba(45,26,120,.12); --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);
+    background:var(--bg);background-image:radial-gradient(900px 500px at 10% -5%,rgba(28,79,160,.12),transparent),
+    radial-gradient(700px 500px at 100% 0%,rgba(16,182,168,.10),transparent);min-height:100vh;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px}
+  button{font-family:inherit;cursor:pointer;border:none}
+  h1,h2,h3{line-height:1.2;margin:0 0 .4em}
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 6px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.15rem}
+  .brand img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:var(--shadow);border:2px solid #fff}
+  .brand small{display:block;font-weight:600;font-size:.72rem;color:var(--muted)}
+  .lockpill{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .btn{background:linear-gradient(135deg,var(--indigo),var(--indigo-d));color:#fff;padding:10px 18px;border-radius:11px;font-weight:800;display:inline-flex;gap:8px;align-items:center}
+  .btn.ghost{background:#fff;color:var(--indigo);border:2px solid #d8e2f3}
+  .btn.warn{background:linear-gradient(135deg,var(--orange),#ff9a5a)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;margin:16px 0}
+  .lock-screen{max-width:520px;margin:6vh auto}
+  .lock-screen .ic{font-size:2.4rem}
+  label{font-weight:700;font-size:.9rem;display:block;margin:14px 0 6px}
+  input{width:100%;padding:12px 14px;border:2px solid #ece8f6;border-radius:12px;font-size:1rem;font-family:inherit;background:#fbfaff}
+  .hint{color:var(--muted);font-size:.88rem}
+  .err{color:var(--bad);font-weight:700;font-size:.9rem;margin-top:10px;min-height:1.2em}
+  .ok{color:var(--good)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:8px 0 20px}
+  .kpi{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+  .kpi .n{font-size:2rem;font-weight:900;color:var(--indigo)}
+  .kpi .l{color:var(--muted);font-size:.85rem;font-weight:600}
+  @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar select,.toolbar input{width:auto;padding:9px 12px;min-width:150px}
+  .tablecard{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px;margin:16px 0;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #eee;vertical-align:top}
+  th{color:var(--indigo);font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;background:#fff}
+  tbody tr:hover{background:#f7f9fe}
+  .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.74rem;font-weight:800}
+  .tag.stud{background:#fff1e8;color:#c2570f}
+  .tag.gen{background:#e3faf6;color:#0c7a70}
+  .ans{max-width:280px}
+  .ans .q1{color:var(--indigo);font-weight:600}
+  .ans .q2{color:#b06a00;font-weight:600;margin-top:4px}
+  .ans small{color:var(--muted)}
+  .empty{color:var(--muted);text-align:center;padding:30px}
+  .badge-sec{display:inline-flex;gap:6px;align-items:center;background:#e7f9f4;color:#0c7a70;padding:4px 10px;border-radius:999px;font-size:.74rem;font-weight:800}
+  .foot{text-align:center;color:var(--muted);font-size:.78rem;padding:26px 10px}
+  .foot b{color:var(--ink)}
+  .foot img{width:40px;height:40px;border-radius:50%;object-fit:cover;margin-bottom:6px;box-shadow:var(--shadow)}
+  .row2{display:flex;gap:10px;flex-wrap:wrap}
+  .row2>div{flex:1;min-width:200px}
+  details{margin-top:14px}
+  summary{cursor:pointer;font-weight:700;color:var(--indigo)}
+  textarea{width:100%;min-height:90px;border:2px solid #ece8f6;border-radius:12px;padding:10px;font-family:monospace;font-size:.8rem;background:#fbfaff}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><img src="logo.jpg" alt="Sacra Famiglia" onerror="this.style.display='none'" />
+      <div>Dashboard Docente<small>Cittadini Digitali · area protetta</small></div></div>
+    <div class="lockpill hidden" id="lockpill">
+      <span class="badge-sec">🔒 sessione sbloccata</span>
+      <button class="btn ghost" onclick="refreshData()">↻ Aggiorna</button>
+      <button class="btn warn" onclick="lock()">Blocca</button>
+    </div>
+  </div>
+
+  <!-- ===== SETUP (prima configurazione) ===== -->
+  <section id="view-setup" class="panel lock-screen hidden">
+    <div class="ic">🛠️</div>
+    <h2>Prima configurazione</h2>
+    <p class="hint">Questa pagina è <b>protetta da password</b>: l'indirizzo del tuo Foglio Google viene
+      <b>cifrato</b> (AES-GCM) e non è leggibile da chi apre il file senza conoscere la password.</p>
+    <label>URL della Web App (termina con <code>/exec</code>)</label>
+    <input id="setEndpoint" placeholder="https://script.google.com/macros/s/.../exec" />
+    <label>Token di lettura (la variabile <code>READ_TOKEN</code> dello script)</label>
+    <input id="setToken" placeholder="incolla qui lo stesso token impostato in Codice.gs" />
+    <div class="row2">
+      <div><label>Scegli una password docente</label><input id="setPw1" type="password" placeholder="almeno 8 caratteri" /></div>
+      <div><label>Ripeti la password</label><input id="setPw2" type="password" placeholder="ripeti" /></div>
+    </div>
+    <div class="err" id="setErr"></div>
+    <div style="margin-top:16px"><button class="btn" onclick="doSetup()">🔐 Cifra e salva</button></div>
+    <details id="exportBox" class="hidden">
+      <summary>Configurazione cifrata (per usarla su altri dispositivi)</summary>
+      <p class="hint">È già salvata in questo browser. Per usarla anche altrove, incolla questa stringa
+        dentro il file alla voce <code>ENC_CONFIG</code> e salva. Senza la password resta illeggibile.</p>
+      <textarea id="exportTxt" readonly onclick="this.select()"></textarea>
+    </details>
+  </section>
+
+  <!-- ===== UNLOCK (sblocco) ===== -->
+  <section id="view-unlock" class="panel lock-screen hidden">
+    <div class="ic">🔒</div>
+    <h2>Area docente protetta</h2>
+    <p class="hint">Inserisci la password per decifrare e visualizzare progressi e risposte.</p>
+    <label>Password docente</label>
+    <input id="unlockPw" type="password" placeholder="password" onkeydown="if(event.key==='Enter')doUnlock()" />
+    <div class="err" id="unlockErr"></div>
+    <div style="margin-top:16px"><button class="btn" onclick="doUnlock()">Sblocca</button>
+      <button class="btn ghost" onclick="resetConfig()" title="Cancella la configurazione salvata in questo browser">Reimposta</button></div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section id="view-dash" class="hidden">
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="kTot">–</div><div class="l">Attività completate</div></div>
+      <div class="kpi"><div class="n" id="kStud">–</div><div class="l">Studenti attivi</div></div>
+      <div class="kpi"><div class="n" id="kGen">–</div><div class="l">Genitori attivi</div></div>
+      <div class="kpi"><div class="n" id="kClass">–</div><div class="l">Classi coinvolte</div></div>
+    </div>
+
+    <div class="toolbar">
+      <select id="fRole" onchange="renderTables()"><option value="">Tutti i ruoli</option><option value="studente">Studenti</option><option value="genitore">Genitori</option></select>
+      <select id="fClass" onchange="renderTables()"><option value="">Tutte le classi</option></select>
+      <input id="fSearch" placeholder="Cerca nome…" oninput="renderTables()" />
+      <button class="btn ghost" onclick="exportCSV()">⬇ Esporta CSV</button>
+      <span class="hint" id="status"></span>
+    </div>
+
+    <div class="tablecard">
+      <h3>Riepilogo per partecipante</h3>
+      <table id="tblPeople"><thead><tr><th>Nome</th><th>Classe</th><th>Ruolo</th><th>Attività completate</th><th>Ultima attività</th></tr></thead><tbody></tbody></table>
+      <div class="empty hidden" id="emptyPeople">Nessun dato.</div>
+    </div>
+
+    <div class="tablecard">
+      <h3>Risposte e dettaglio attività</h3>
+      <p class="hint">Per le scene a doppia risposta: <span class="q1" style="color:var(--indigo)">cosa so / è giusto</span> e <span style="color:#b06a00">cosa farei davvero</span>.</p>
+      <table id="tblAnswers"><thead><tr><th>Data</th><th>Nome</th><th>Classe</th><th>Ruolo</th><th>Modulo</th><th>Attività</th><th>Esito</th><th>Risposte</th></tr></thead><tbody></tbody></table>
+      <div class="empty hidden" id="emptyAnswers">Nessuna risposta registrata.</div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <img src="logo.jpg" alt="Scuola Sacra Famiglia" onerror="this.style.display='none'" />
+    <div><b>App realizzata dall'animatore digitale della Scuola Sacra Famiglia — Andrea Cerioli. Tutti i diritti riservati.</b></div>
+    Dashboard docente protetta · i dati restano sul tuo Foglio Google.
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIGURAZIONE CIFRATA (opzionale)
+   Se incolli qui la stringa generata in fase di setup, la pagina funziona
+   su qualsiasi dispositivo. Lasciala vuota per usare il salvataggio locale.
+   ===================================================================== */
+const ENC_CONFIG = '';
+
+const LS_KEY = 'cd_dash_enc_v1';
+let ENDPOINT = null;   // decifrato, in memoria, solo a sessione sbloccata
+let TOKEN = '';        // token di lettura, decifrato in memoria
+let RAW = [];          // righe lette dal foglio
+
+/* ---------- Crypto: PBKDF2 + AES-GCM ---------- */
+const enc = new TextEncoder(), dec = new TextDecoder();
+function b64e(buf){ return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+function b64d(str){ return Uint8Array.from(atob(str), c=>c.charCodeAt(0)); }
+async function deriveKey(password, salt){
+  const base = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt, iterations:150000, hash:'SHA-256' },
+    base, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+}
+async function encryptText(plain, password){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const key  = await deriveKey(password, salt);
+  const ct   = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, enc.encode(plain));
+  const out  = new Uint8Array(salt.length + iv.length + ct.byteLength);
+  out.set(salt,0); out.set(iv,16); out.set(new Uint8Array(ct),28);
+  return b64e(out.buffer);
+}
+async function decryptText(blobB64, password){
+  const data = b64d(blobB64);
+  const salt = data.slice(0,16), iv = data.slice(16,28), ct = data.slice(28);
+  const key  = await deriveKey(password, salt);
+  const pt   = await crypto.subtle.decrypt({ name:'AES-GCM', iv }, key, ct);
+  return dec.decode(pt);
+}
+
+/* ---------- Routing iniziale ---------- */
+function show(id){ ['setup','unlock','dash'].forEach(v=>document.getElementById('view-'+v).classList.toggle('hidden', v!==id)); }
+function currentBlob(){ return (ENC_CONFIG && ENC_CONFIG.trim()) || localStorage.getItem(LS_KEY) || ''; }
+function boot(){
+  if(!('subtle' in (crypto||{}))){ alert('Questo browser non supporta la crittografia richiesta. Apri la pagina via http(s), non come file locale, oppure usa un browser aggiornato.'); }
+  if(currentBlob()){ show('unlock'); setTimeout(()=>document.getElementById('unlockPw').focus(),100); }
+  else { show('setup'); }
+}
+
+/* ---------- Setup ---------- */
+async function doSetup(){
+  const ep=document.getElementById('setEndpoint').value.trim();
+  const tk=document.getElementById('setToken').value.trim();
+  const p1=document.getElementById('setPw1').value, p2=document.getElementById('setPw2').value;
+  const e=document.getElementById('setErr'); e.textContent='';
+  if(!/^https:\/\/script\.google\.com\/.+\/exec$/.test(ep)){ e.textContent='Inserisci un URL valido che termina con /exec'; return; }
+  if(!tk){ e.textContent='Inserisci il token di lettura (READ_TOKEN dello script).'; return; }
+  if(p1.length<8){ e.textContent='La password deve avere almeno 8 caratteri.'; return; }
+  if(p1!==p2){ e.textContent='Le due password non coincidono.'; return; }
+  const blob = await encryptText(JSON.stringify({ endpoint:ep, token:tk }), p1);
+  localStorage.setItem(LS_KEY, blob);
+  document.getElementById('exportTxt').value = blob;
+  document.getElementById('exportBox').classList.remove('hidden');
+  ENDPOINT = ep; TOKEN = tk;
+  e.className='err ok'; e.textContent='Configurazione cifrata e salvata. Avvio dashboard…';
+  setTimeout(()=>{ e.className='err'; openDash(); }, 900);
+}
+
+/* ---------- Unlock ---------- */
+async function doUnlock(){
+  const pw=document.getElementById('unlockPw').value;
+  const e=document.getElementById('unlockErr'); e.textContent='';
+  try{
+    const obj = JSON.parse(await decryptText(currentBlob(), pw));
+    if(!obj.endpoint) throw new Error('config');
+    ENDPOINT = obj.endpoint; TOKEN = obj.token || '';
+    document.getElementById('unlockPw').value='';
+    openDash();
+  }catch(err){ e.textContent='Password errata o configurazione non valida.'; }
+}
+function lock(){ ENDPOINT=null; TOKEN=''; RAW=[]; document.getElementById('lockpill').classList.add('hidden'); show('unlock'); setTimeout(()=>document.getElementById('unlockPw').focus(),100); }
+function resetConfig(){ if(confirm('Cancellare la configurazione salvata in questo browser?')){ localStorage.removeItem(LS_KEY); location.reload(); } }
+
+/* ---------- Lettura dati via JSONP (no problemi CORS) ---------- */
+function fetchJSONP(url){
+  return new Promise((resolve,reject)=>{
+    const cb='cd_cb_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    const to=setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, 15000);
+    function cleanup(){ clearTimeout(to); delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); }
+    window[cb]=data=>{ cleanup(); resolve(data); };
+    s.onerror=()=>{ cleanup(); reject(new Error('network')); };
+    s.src=url+(url.indexOf('?')<0?'?':'&')+'action=read&callback='+cb+'&token='+encodeURIComponent(TOKEN);
+    document.body.appendChild(s);
+  });
+}
+async function openDash(){
+  show('dash'); document.getElementById('lockpill').classList.remove('hidden');
+  await refreshData();
+}
+async function refreshData(){
+  const st=document.getElementById('status'); st.textContent='Caricamento…';
+  try{
+    const res=await fetchJSONP(ENDPOINT);
+    if(res && res.ok===false){
+      st.textContent = (res.error==='non autorizzato')
+        ? 'Token di lettura errato: reimposta la configurazione con il token corretto (READ_TOKEN dello script).'
+        : ('Errore: '+res.error);
+      return;
+    }
+    RAW=(res&&res.rows)?res.rows:[];
+    buildFilters(); renderKPIs(); renderTables();
+    st.textContent='Aggiornato: '+new Date().toLocaleTimeString('it-IT');
+  }catch(err){ st.textContent='Errore di lettura. Verifica l\'URL /exec e che la Web App sia pubblicata per «Chiunque».'; }
+}
+
+/* ---------- Render ---------- */
+function uniq(arr){ return [...new Set(arr.filter(x=>x!=null&&x!==''))]; }
+function buildFilters(){
+  const sel=document.getElementById('fClass'); const cur=sel.value;
+  const classes=uniq(RAW.map(r=>r.classe)).sort();
+  sel.innerHTML='<option value="">Tutte le classi</option>'+classes.map(c=>'<option>'+esc(c)+'</option>').join('');
+  sel.value=cur;
+}
+function filtered(){
+  const role=document.getElementById('fRole').value, cls=document.getElementById('fClass').value,
+        q=(document.getElementById('fSearch').value||'').toLowerCase();
+  return RAW.filter(r=> (!role||r.role===role) && (!cls||r.classe===cls) && (!q||String(r.name||'').toLowerCase().includes(q)) );
+}
+function renderKPIs(){
+  document.getElementById('kTot').textContent=RAW.length;
+  document.getElementById('kStud').textContent=uniq(RAW.filter(r=>r.role==='studente').map(r=>r.name+'|'+r.classe)).length;
+  document.getElementById('kGen').textContent=uniq(RAW.filter(r=>r.role==='genitore').map(r=>r.name+'|'+r.classe)).length;
+  document.getElementById('kClass').textContent=uniq(RAW.map(r=>r.classe)).length;
+}
+function renderTables(){
+  const rows=filtered();
+  // per persona
+  const people={};
+  rows.forEach(r=>{ const k=r.name+'|'+r.classe+'|'+r.role; if(!people[k]) people[k]={name:r.name,classe:r.classe,role:r.role,n:0,last:''};
+    people[k].n++; const t=String(r.timestamp||''); if(t>people[k].last) people[k].last=t; });
+  const plist=Object.values(people).sort((a,b)=>b.n-a.n);
+  const pb=document.querySelector('#tblPeople tbody');
+  pb.innerHTML=plist.map(p=>'<tr><td><b>'+esc(p.name)+'</b></td><td>'+esc(p.classe)+'</td><td>'+roleTag(p.role)+'</td><td>'+p.n+'</td><td>'+fmtDate(p.last)+'</td></tr>').join('');
+  document.getElementById('emptyPeople').classList.toggle('hidden', plist.length>0);
+  // risposte
+  const ab=document.querySelector('#tblAnswers tbody');
+  const arows=rows.slice().sort((a,b)=>String(b.timestamp).localeCompare(String(a.timestamp)));
+  ab.innerHTML=arows.map(r=>{
+    let ans='';
+    if(r.risposta1) ans+='<div class="q1">1 · '+esc(r.risposta1)+'</div>';
+    if(r.risposta2) ans+='<div class="q2">2 · '+esc(r.risposta2)+'</div>';
+    if(r.dettaglio) ans+='<small>↳ '+esc(r.dettaglio)+'</small>';
+    if(!ans) ans='<small>—</small>';
+    return '<tr><td>'+fmtDate(r.timestamp)+'</td><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.classe)+'</td><td>'+roleTag(r.role)+
+      '</td><td>'+esc(r.modulo)+'</td><td>'+esc(r.attivita)+'</td><td>'+esc(r.punteggio)+'</td><td class="ans">'+ans+'</td></tr>';
+  }).join('');
+  document.getElementById('emptyAnswers').classList.toggle('hidden', arows.length>0);
+}
+function roleTag(r){ return r==='studente'?'<span class="tag stud">studente</span>':(r==='genitore'?'<span class="tag gen">genitore</span>':esc(r||'')); }
+function fmtDate(t){ if(!t) return '—'; const d=new Date(t); return isNaN(d)?esc(String(t)):d.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- Export CSV ---------- */
+function exportCSV(){
+  const rows=filtered();
+  const head=['Data','Ruolo','Nome','Classe','Modulo','Attività','Punteggio','Cosa so','Cosa farei','Dettaglio'];
+  const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const lines=[head.map(q).join(',')].concat(rows.map(r=>[r.timestamp,r.role,r.name,r.classe,r.modulo,r.attivita,r.punteggio,r.risposta1,r.risposta2,r.dettaglio].map(q).join(',')));
+  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='cittadini-digitali-progressi-'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+boot();
+</script>
+</body>
+</html>

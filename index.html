@@ -4,9 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Cittadini Digitali · Percorso per studenti e famiglie</title>
+<!-- Font del lato genitori, coerenti con il Patto Digitale (caricati solo se online; fallback di sistema offline) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --indigo:#5b2be0; --indigo-d:#3d1a9e; --teal:#10b6a8; --orange:#ff7a3d;
+    --indigo:#1c4fa0; --indigo-d:#14387a; --teal:#10b6a8; --orange:#ff7a3d;
     --olive:#6b6a4b; --mint:#9be8df; --sand:#e7d9b5;
     --ink:#1c1633; --muted:#6b6680; --bg:#f5f3fb; --card:#ffffff;
     --good:#16a34a; --bad:#e23d52; --warn:#f5a623;
@@ -18,7 +22,7 @@
   body{
     font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
     color:var(--ink); background:var(--bg);
-    background-image:radial-gradient(900px 500px at 10% -5%,rgba(91,43,224,.10),transparent),
+    background-image:radial-gradient(900px 500px at 10% -5%,rgba(28,79,160,.12),transparent),
                      radial-gradient(700px 500px at 100% 0%,rgba(16,182,168,.10),transparent);
     min-height:100vh; line-height:1.55;
   }
@@ -31,9 +35,12 @@
   /* Top bar */
   .topbar{display:flex;align-items:center;gap:14px;padding:14px 18px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.15rem}
-  .brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--teal));
-    display:grid;place-items:center;box-shadow:var(--shadow)}
+  .brand .logo-img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#fff;
+    box-shadow:var(--shadow);border:2px solid #fff}
   .brand small{display:block;font-weight:600;font-size:.72rem;color:var(--muted);letter-spacing:.3px}
+  .credit{font-size:.7rem;color:var(--muted);text-align:right;line-height:1.35;max-width:220px}
+  .credit b{color:var(--indigo)}
+  @media(max-width:560px){.credit{display:none}}
   .spacer{flex:1}
   .userchip{display:flex;align-items:center;gap:8px;background:#fff;padding:7px 12px;border-radius:999px;
     box-shadow:var(--shadow);font-weight:700;font-size:.86rem}
@@ -88,7 +95,7 @@
     cursor:pointer;transition:transform .15s;border-top:5px solid var(--indigo);position:relative}
   .mod-card:hover{transform:translateY(-4px)}
   .mod-card .num{position:absolute;top:14px;right:18px;font-weight:800;font-size:2rem;opacity:.12}
-  .mod-card .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;margin-bottom:10px;background:#f1edfd}
+  .mod-card .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;margin-bottom:10px;background:#e8f0fb}
   .mod-card h3{font-size:1.1rem}
   .mod-card p{color:var(--muted);font-size:.86rem;margin:.2em 0 12px}
   .bar{height:9px;background:#ece8f6;border-radius:999px;overflow:hidden}
@@ -106,7 +113,7 @@
   .lesson h4{margin:16px 0 6px;font-size:1rem;color:var(--indigo-d)}
   .lesson ul{margin:.3em 0;padding-left:1.1em}
   .lesson li{margin:.25em 0}
-  .pill{display:inline-block;background:#f1edfd;color:var(--indigo-d);font-weight:700;font-size:.74rem;padding:4px 11px;border-radius:999px;margin:0 6px 6px 0}
+  .pill{display:inline-block;background:#e8f0fb;color:var(--indigo-d);font-weight:700;font-size:.74rem;padding:4px 11px;border-radius:999px;margin:0 6px 6px 0}
   .callout{background:#fff8ed;border-left:4px solid var(--warn);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0;font-size:.92rem}
   .callout.tip{background:#ecfdf6;border-color:var(--good)}
   .callout.dang{background:#fdecef;border-color:var(--bad)}
@@ -135,6 +142,94 @@
   .opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid #cfc8e6;flex-shrink:0;display:grid;place-items:center}
   .explain{font-size:.86rem;color:var(--muted);margin-top:8px;padding-left:4px;display:none}
   .explain.show{display:block}
+
+  /* Scenario di problem solving */
+  .scene{background:linear-gradient(135deg,#eef3fb,#f7f5ff);border:1px solid #d8e2f3;border-left:5px solid var(--indigo);
+    border-radius:0 16px 16px 0;padding:16px 18px;margin:6px 0 4px;font-size:1rem;line-height:1.6;color:#22304d}
+  .scene-q{font-weight:800;margin:16px 0 8px;font-size:1.02rem;color:var(--ink)}
+  .choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #e3def2;border-radius:14px;
+    padding:13px 16px;margin:8px 0;font-weight:600;font-size:.95rem;color:var(--ink);transition:all .15s}
+  .choice:hover{border-color:var(--indigo);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .choice.good{border-color:var(--good);background:#effaf1}
+  .choice.bad{border-color:var(--bad);background:#fdecef}
+  .choice.dim{opacity:.55}
+  .choice.picked{box-shadow:0 0 0 3px rgba(28,79,160,.18)}
+  .explain.outcome{background:#f7f8fb;border-radius:12px;padding:10px 14px;margin-top:-2px}
+  .insight{display:none;background:#fff7e9;border:1px solid #f3d899;border-radius:14px;padding:14px 16px;margin:14px 0;
+    font-size:.92rem;line-height:1.55}
+  .insight.show{display:block}
+  .insight b{color:#b07400}
+  .dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .dbox{border-radius:16px;padding:14px 16px;border:2px solid}
+  .dbox.know{background:#eef6ff;border-color:#bcd6f5}
+  .dbox.real{background:#fff0f1;border-color:#f6c6cd}
+  .dbox .dl{font-weight:800;font-size:.92rem;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .dbox.know .dl{color:var(--indigo)} .dbox.real .dl{color:var(--bad)}
+  .dbox .dn{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.82rem;flex-shrink:0}
+  .dbox.know .dn{background:var(--indigo)} .dbox.real .dn{background:var(--bad)}
+  .dbox .dq{font-size:.86rem;color:var(--muted);margin:0 0 8px}
+  .dbox textarea{width:100%;min-height:80px;border:1px solid #d8d2ec;border-radius:10px;padding:10px;font-family:inherit;font-size:.92rem;resize:vertical}
+  @media(max-width:600px){.dual{grid-template-columns:1fr}}
+
+  /* ===== Banner illustrato attività ===== */
+  .art-banner{margin:4px 0 14px;border-radius:14px;overflow:hidden;line-height:0}
+  .art-banner svg{width:100%;height:auto;display:block;max-height:120px}
+  .mini-prompt{font-weight:800;color:var(--ink);margin:6px 0 12px;font-size:.96rem}
+
+  /* ===== HOTTEXT ===== */
+  .hottext{background:#fbfaff;border:1px solid #e3def4;border-radius:14px;padding:16px 18px;line-height:2.1;font-size:1rem}
+  .htok{display:inline;padding:2px 5px;border-radius:7px;cursor:pointer;transition:.15s;border:1px dashed transparent}
+  .htok:hover{background:#eef3fb;border-color:#cdd9ef}
+  .htok.on{background:#ffe5d3;border:1px solid var(--orange);font-weight:700}
+  .htok.reveal-bad{border:1px solid var(--bad)}
+  .htok.hit{background:#d7f5e2;border-color:var(--good);font-weight:700}
+  .htok.miss{background:#fde2e6;border-color:var(--bad);text-decoration:line-through}
+
+  /* ===== CATEGORIZE ===== */
+  .cat-legend{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 12px}
+  .cat-pill{padding:5px 12px;border-radius:999px;font-weight:800;font-size:.82rem;color:#fff}
+  .cat-pill.p0{background:var(--good)} .cat-pill.p1{background:var(--bad)}
+  .cat-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    background:#fbfaff;border:1px solid #e6e1f3;border-radius:12px;padding:9px 12px;margin:8px 0}
+  .cat-txt{font-weight:600;font-size:.94rem;flex:1;min-width:140px}
+  .cat-btns{display:flex;gap:6px;flex-shrink:0}
+  .cat-b{padding:6px 11px;border-radius:9px;font-weight:700;font-size:.8rem;border:2px solid #d8d2ec;background:#fff;color:var(--muted);cursor:pointer}
+  .cat-b.p0.sel{background:var(--good);border-color:var(--good);color:#fff}
+  .cat-b.p1.sel{background:var(--bad);border-color:var(--bad);color:#fff}
+  .cat-b.correct{outline:3px solid #b9eccb;border-color:var(--good);color:var(--good)}
+  .cat-row.cat-ok{border-color:var(--good);background:#f1fbf4}
+  .cat-row.cat-no{border-color:var(--bad);background:#fdf2f4}
+
+  /* ===== REORDER ===== */
+  .reorder{display:flex;flex-direction:column;gap:8px}
+  .ro-item{display:flex;align-items:center;gap:10px;background:#fbfaff;border:1px solid #e6e1f3;border-radius:12px;padding:10px 12px}
+  .ro-num{width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem;flex-shrink:0}
+  .ro-txt{flex:1;font-weight:600;font-size:.93rem}
+  .ro-ctrl{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+  .ro-arr{width:30px;height:22px;border-radius:7px;border:1px solid #d8d2ec;background:#fff;color:var(--indigo);font-size:.7rem;cursor:pointer;line-height:1}
+  .ro-arr:disabled{opacity:.3;cursor:default}
+  .ro-item.ro-ok{border-color:var(--good);background:#f1fbf4}
+  .ro-item.ro-ok .ro-num{background:var(--good)}
+  .ro-item.ro-no{border-color:var(--bad);background:#fdf2f4}
+  .ro-item.ro-no .ro-num{background:var(--bad)}
+
+  /* ===== DROPDOWN ===== */
+  .dropfill{background:#fbfaff;border:1px solid #e3def4;border-radius:14px;padding:16px 18px;line-height:2.4;font-size:1rem}
+  .ddsel{font-family:inherit;font-size:.92rem;font-weight:700;color:var(--indigo);background:#eef3fb;
+    border:1.5px solid #bcd6f5;border-radius:9px;padding:4px 8px;margin:0 3px;cursor:pointer}
+  .ddsel.dd-ok{background:#e3f8ec;border-color:var(--good);color:var(--good)}
+  .ddsel.dd-no{background:#fde7eb;border-color:var(--bad);color:var(--bad)}
+
+  /* ===== HOTSPOT ===== */
+  .hotspot{position:relative;border-radius:14px;overflow:hidden;line-height:0;border:1px solid #e3def4}
+  .hotspot svg{width:100%;height:auto;display:block}
+  .hspot{position:absolute;border:2px dashed rgba(255,255,255,.55);border-radius:8px;background:rgba(28,79,160,.06);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;transition:.15s}
+  .hspot:hover{background:rgba(255,122,61,.22);border-color:var(--orange)}
+  .hslabel{font-size:.62rem;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);line-height:1.05;text-align:center;pointer-events:none}
+  .hspot.hs-ok{background:rgba(22,163,74,.32);border:2px solid var(--good)}
+  .hspot.hs-no{background:rgba(226,61,82,.32);border:2px solid var(--bad)}
+  .muted{color:var(--muted)}
 
   /* Phishing email */
   .email{border:1px solid #e3def2;border-radius:14px;overflow:hidden;margin:12px 0}
@@ -180,7 +275,7 @@
   .btn-act{background:linear-gradient(135deg,var(--orange),#ff9a5a);color:#fff;padding:11px 22px;border-radius:11px;font-weight:800;display:inline-flex;align-items:center;gap:8px}
   .act.par .btn-act{background:linear-gradient(135deg,var(--teal),#3ccabb)}
   .btn-act:hover{filter:brightness(1.06)}
-  .btn-sec{background:#f1edfd;color:var(--indigo-d);padding:11px 18px;border-radius:11px;font-weight:700}
+  .btn-sec{background:#e8f0fb;color:var(--indigo-d);padding:11px 18px;border-radius:11px;font-weight:700}
   .score-line{margin-top:12px;font-weight:800;display:none}
   .score-line.show{display:block}
 
@@ -202,18 +297,62 @@
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
   .foot{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 10px}
+  .foot-logo{width:44px;height:44px;border-radius:50%;object-fit:cover;margin-bottom:8px;box-shadow:var(--shadow)}
+  .foot b{color:var(--ink)}
   @media(max-width:560px){.match{grid-template-columns:1fr}}
+
+  /* =====================================================================
+     TEMA GENITORI — coerente con il Patto Digitale (pattodigitale.neocities.org)
+     Palette verde bosco / oro / crema, font Lora (titoli) + Atkinson (testo).
+     ===================================================================== */
+  body.parent-theme{
+    --teal:#1B6B3A; --indigo:#1B6B3A; --indigo-d:#0E4423; --mint:#A8C4A8;
+    --orange:#B8860B; --ink:#1A2E1A; --muted:#4A6B4A; --bad:#B8372A; --warn:#B8860B;
+    --bg:#F5F9F5; --card:#FFFFFF;
+    --shadow:0 2px 14px rgba(27,107,58,.10);
+    background:#F5F9F5;
+    background-image:radial-gradient(900px 500px at 10% -5%,rgba(27,107,58,.10),transparent),
+                     radial-gradient(700px 500px at 100% 0%,rgba(184,134,11,.08),transparent);
+    font-family:'Atkinson Hyperlegible','Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;
+  }
+  body.parent-theme h1,body.parent-theme h2,body.parent-theme h3,
+  body.parent-theme .brand,body.parent-theme .act h3,body.parent-theme .mod-card h3{
+    font-family:'Lora',Georgia,'Times New Roman',serif;letter-spacing:.1px;
+  }
+  body.parent-theme a{color:#1B6B3A}
+  body.parent-theme .credit b{color:#1B6B3A}
+  /* card attività lato genitori */
+  body.parent-theme .act{border-color:#C8DCC8;box-shadow:0 2px 14px rgba(27,107,58,.07)}
+  body.parent-theme .act.par .ic,body.parent-theme .act .ic{background:#EBF2EB !important}
+  body.parent-theme .act.par .type{color:#B8860B}
+  body.parent-theme .act.par .btn-act,body.parent-theme .btn-act{background:linear-gradient(135deg,#1B6B3A,#22804A)}
+  body.parent-theme .bar i{background:linear-gradient(90deg,#1B6B3A,#B8860B)}
+  body.parent-theme .ring{background:conic-gradient(#1B6B3A calc(var(--p)*1%),#D8E8D8 0)}
+  body.parent-theme .callout{background:#F5F9F5;border-left-color:#B8860B}
+  body.parent-theme .callout.tip{background:#EBF2EB;border-left-color:#1B6B3A}
+  body.parent-theme .scene{background:linear-gradient(135deg,#EBF2EB,#F5F9F5);border-color:#C8DCC8;border-left-color:#1B6B3A}
+  body.parent-theme .insight{background:#FBF7EC;border-color:#E7D9A8}
+  body.parent-theme .insight b{color:#9A7000}
+  body.parent-theme .reflect-q .n{background:#1B6B3A}
+  body.parent-theme .dbox.know{background:#EBF2EB;border-color:#C8DCC8}
+  body.parent-theme .dbox.know .dl,body.parent-theme .dbox.know .dn{color:#1B6B3A}
+  body.parent-theme .dbox.know .dn{background:#1B6B3A;color:#fff}
+  body.parent-theme .dbox.real{background:#FBF1E8;border-color:#E6C79A}
+  body.parent-theme .dbox.real .dl{color:#B8860B}
+  body.parent-theme .dbox.real .dn{background:#B8860B;color:#fff}
+  body.parent-theme input,body.parent-theme select,body.parent-theme textarea{background:#FBFDF9;border-color:#D8E8D8}
+  body.parent-theme .userchip .role{background:#1B6B3A}
+  body.parent-theme .crumb{color:#1B6B3A}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="brand">
-    <div class="logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#fff"/><path d="M9 12l2 2 4-4" stroke="#5b2be0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div>Cittadini Digitali<small>Cybersicurezza &amp; cittadinanza · scuola e famiglia</small></div>
+    <img class="logo-img" src="logo.jpg" alt="Logo Scuola Sacra Famiglia" />
+    <div>Cittadini Digitali<small>Cybersicurezza &amp; cittadinanza · Scuola Sacra Famiglia</small></div>
   </div>
   <div class="spacer"></div>
+  <div class="credit">App realizzata dall'animatore digitale<br><b>Andrea Cerioli</b> · tutti i diritti riservati</div>
   <div id="userArea"></div>
 </div>
 
@@ -230,8 +369,8 @@
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 5-9 5-9-5 9-5z" fill="#fff"/><path d="M6 10v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
         </div>
         <h3>Sono uno Studente</h3>
-        <p>Mettiti alla prova con quiz, simulazioni anti-phishing, laboratori di fact-checking e sfide pratiche.</p>
-        <span class="tag">Quiz interattivi</span><span class="tag">Simulazioni</span><span class="tag">Laboratori</span>
+        <p>Vivi scene di vita quotidiana e decidi tu come reagire. Per ogni scena: cosa <b>sai</b> che è giusto e cosa <b>faresti davvero</b>.</p>
+        <span class="tag">Scene reali</span><span class="tag">Scelte e conseguenze</span><span class="tag">So / Farei</span>
         <div><span class="go">Entra come studente
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span></div>
@@ -249,10 +388,12 @@
       </div>
     </div>
     <div class="mini-access">
-      <button onclick="openDashboard()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" fill="#5b2be0"/><rect x="14" y="3" width="7" height="5" rx="1.5" fill="#10b6a8"/><rect x="14" y="11" width="7" height="10" rx="1.5" fill="#5b2be0"/><rect x="3" y="15" width="7" height="6" rx="1.5" fill="#10b6a8"/></svg>
-        Dashboard Docente
-      </button>
+      <a href="dashboard-docente.html" style="text-decoration:none">
+        <button type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" fill="#1c4fa0"/><rect x="14" y="3" width="7" height="5" rx="1.5" fill="#10b6a8"/><rect x="14" y="11" width="7" height="10" rx="1.5" fill="#1c4fa0"/><rect x="3" y="15" width="7" height="6" rx="1.5" fill="#10b6a8"/></svg>
+          Dashboard Docente <span style="font-size:.72rem;opacity:.7">🔒 area protetta</span>
+        </button>
+      </a>
     </div>
   </section>
 
@@ -265,12 +406,10 @@
   <!-- MODULE DETAIL -->
   <section id="view-module" class="hidden"></section>
 
-  <!-- DASHBOARD -->
-  <section id="view-dashboard" class="hidden"></section>
-
   <div class="foot">
-    Realizzato a partire dagli appunti del corso <b>«Educazione alla cybersicurezza e cittadinanza digitale»</b> · Scuola Futura.<br>
-    I dati di avanzamento vengono salvati sul dispositivo e, se configurato, sincronizzati su Google Sheet.
+    <img src="logo.jpg" alt="Scuola Sacra Famiglia" class="foot-logo" />
+    <div><b>App realizzata dall'animatore digitale della Scuola Sacra Famiglia — Andrea Cerioli. Tutti i diritti riservati.</b></div>
+    Contenuti tratti dagli appunti del corso <b>«Educazione alla cybersicurezza e cittadinanza digitale»</b> · Scuola Futura.
   </div>
 </div>
 
@@ -282,17 +421,18 @@
    (vedi ISTRUZIONI.md). Lascia '' per usare solo il salvataggio locale.
 ============================================================ */
 const CONFIG = {
-  SHEET_ENDPOINT: 'https://script.google.com/macros/s/AKfycbxq5wHXswXbcsqA6h4bBS8ceBvSIA_mNU-Q8m-uYPDhfQO7YSBCpf3QlF49XpDb41Td/exec',
-  DASHBOARD_PIN: '1234' // PIN per aprire la Dashboard Docente — CAMBIALO!
+  // Questa app SCRIVE solo i progressi. La lettura/monitoraggio avviene nella
+  // pagina separata e protetta dashboard-docente.html.
+  SHEET_ENDPOINT: 'https://script.google.com/macros/s/AKfycbxq5wHXswXbcsqA6h4bBS8ceBvSIA_mNU-Q8m-uYPDhfQO7YSBCpf3QlF49XpDb41Td/exec'
 };
 </script>
 <script id="appdata">
 /* ICONE SVG riutilizzabili */
 const ICON = {
-  globe:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#5b2be0" stroke-width="2"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke="#5b2be0" stroke-width="1.6"/></svg>',
-  shield:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 2.5V11c0 4.5-3 7.5-7 9.5-4-2-7-5-7-9.5V5.5L12 3z" stroke="#5b2be0" stroke-width="2" fill="#f1edfd"/><path d="M9 12l2 2 4-4" stroke="#5b2be0" stroke-width="2" stroke-linecap="round"/></svg>',
-  people:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#5b2be0" stroke-width="2"/><circle cx="16.5" cy="9" r="2.2" stroke="#5b2be0" stroke-width="1.8"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5M14.5 19c0-2 1.3-3.6 3-3.6S20.5 17 20.5 19" stroke="#5b2be0" stroke-width="2" stroke-linecap="round"/></svg>',
-  book:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 5c2-1 5-1 8 0v14c-3-1-6-1-8 0V5z" stroke="#5b2be0" stroke-width="2" fill="#f1edfd"/><path d="M20 5c-2-1-5-1-8 0v14c3-1 6-1 8 0V5z" stroke="#5b2be0" stroke-width="2"/></svg>',
+  globe:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1c4fa0" stroke-width="2"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke="#1c4fa0" stroke-width="1.6"/></svg>',
+  shield:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 2.5V11c0 4.5-3 7.5-7 9.5-4-2-7-5-7-9.5V5.5L12 3z" stroke="#1c4fa0" stroke-width="2" fill="#e8f0fb"/><path d="M9 12l2 2 4-4" stroke="#1c4fa0" stroke-width="2" stroke-linecap="round"/></svg>',
+  people:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#1c4fa0" stroke-width="2"/><circle cx="16.5" cy="9" r="2.2" stroke="#1c4fa0" stroke-width="1.8"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5M14.5 19c0-2 1.3-3.6 3-3.6S20.5 17 20.5 19" stroke="#1c4fa0" stroke-width="2" stroke-linecap="round"/></svg>',
+  book:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 5c2-1 5-1 8 0v14c-3-1-6-1-8 0V5z" stroke="#1c4fa0" stroke-width="2" fill="#e8f0fb"/><path d="M20 5c-2-1-5-1-8 0v14c3-1 6-1 8 0V5z" stroke="#1c4fa0" stroke-width="2"/></svg>',
   quiz:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#c2410c" stroke-width="2"/><path d="M9.5 9.5c0-1.4 1.1-2.5 2.5-2.5s2.5 1 2.5 2.3c0 1.8-2.5 1.9-2.5 3.7" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="#c2410c"/></svg>',
   hook:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M16 4v8a4 4 0 11-4-4" stroke="#c2410c" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="16" cy="4" r="1.6" fill="#c2410c"/></svg>',
   key:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="4" stroke="#c2410c" stroke-width="2"/><path d="M11 11l8 8M16 16l2-2M18 18l2-2" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/></svg>',
@@ -304,251 +444,620 @@ const ICON = {
   pact:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7l5-3 6 2 5-2v12l-5 2-6-2-5 3V7z" stroke="#0b756b" stroke-width="2" stroke-linejoin="round"/></svg>',
   chat:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v10H10l-4 4V5z" stroke="#0b756b" stroke-width="2" stroke-linejoin="round"/></svg>',
   list:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M8 6h12M8 12h12M8 18h12" stroke="#0b756b" stroke-width="2" stroke-linecap="round"/><circle cx="4" cy="6" r="1.4" fill="#0b756b"/><circle cx="4" cy="12" r="1.4" fill="#0b756b"/><circle cx="4" cy="18" r="1.4" fill="#0b756b"/></svg>',
-  check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  location:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg>',
+  eye:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="2"/></svg>',
+  lock:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke="currentColor" stroke-width="2"/></svg>',
+  sort:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  target:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>',
+  flag:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 21V4M6 4h11l-2 3 2 3H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  tag:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12V4h8l9 9-8 8-9-9z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor"/></svg>',
+  clock:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  camera:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M8 7l2-3h4l2 3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.2" stroke="currentColor" stroke-width="2"/></svg>',
+  send:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7-7-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+  alert:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4l9 16H3l9-16z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>'
+};
+
+/* ===== ILLUSTRAZIONI SVG riutilizzabili (banner attività) ===== */
+const ART = {
+  phone:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><rect x="92" y="16" width="56" height="84" rx="9" fill="#fff" stroke="#1c4fa0" stroke-width="2.5"/><rect x="100" y="26" width="40" height="46" rx="4" fill="#dbe7fb"/><circle cx="120" cy="84" r="4" fill="#1c4fa0"/><circle cx="120" cy="46" r="11" fill="#ff7a3d"/><path d="M115 46l3.5 3.5L126 42" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="46" cy="40" r="14" fill="#9be8df"/><circle cx="200" cy="62" r="10" fill="#ffd27a"/></svg>',
+  chat:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><path d="M36 28h120a8 8 0 018 8v26a8 8 0 01-8 8H78l-20 16V70H36a8 8 0 01-8-8V36a8 8 0 018-8z" fill="#fff" stroke="#1c4fa0" stroke-width="2.5"/><path d="M48 42h92M48 54h64" stroke="#9bb6e0" stroke-width="4" stroke-linecap="round"/><circle cx="196" cy="58" r="20" fill="#ff7a3d"/><path d="M196 49v10M196 65v.5" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
+  shield:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#fdeef0"/><path d="M120 16l34 12v22c0 22-15 36-34 46-19-10-34-24-34-46V28l34-12z" fill="#fff" stroke="#e23d52" stroke-width="2.5"/><path d="M106 56l10 10 20-22" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="44" cy="42" r="12" fill="#ffd27a"/><circle cx="198" cy="64" r="9" fill="#f7a9b3"/></svg>',
+  family:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#EBF2EB"/><circle cx="86" cy="44" r="15" fill="#1B6B3A"/><path d="M62 92c0-14 11-24 24-24s24 10 24 24" fill="#1B6B3A"/><circle cx="140" cy="50" r="12" fill="#B8860B"/><path d="M121 92c0-11 9-19 19-19s19 8 19 19" fill="#B8860B"/><circle cx="178" cy="58" r="9" fill="#4A6B4A"/><path d="M164 92c0-8 6-14 14-14s14 6 14 14" fill="#4A6B4A"/><path d="M40 100h160" stroke="#C8DCC8" stroke-width="3" stroke-linecap="round"/></svg>',
+  photo:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><rect x="64" y="22" width="112" height="74" rx="8" fill="#fff" stroke="#1c4fa0" stroke-width="2.5"/><circle cx="92" cy="48" r="9" fill="#ffd27a"/><path d="M70 90l28-28 18 16 14-12 22 24" fill="#9be8df"/><path d="M70 90l28-28 18 16 14-12 22 24" stroke="#1c4fa0" stroke-width="2" fill="#9be8df"/><path d="M186 30l8 8M194 30l-8 8" stroke="#e23d52" stroke-width="3" stroke-linecap="round"/></svg>',
+  news:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><rect x="50" y="20" width="120" height="78" rx="6" fill="#fff" stroke="#1c4fa0" stroke-width="2.5"/><rect x="60" y="30" width="100" height="16" rx="3" fill="#1c4fa0"/><rect x="60" y="54" width="44" height="34" rx="3" fill="#dbe7fb"/><path d="M112 58h48M112 68h48M112 78h34" stroke="#9bb6e0" stroke-width="4" stroke-linecap="round"/><circle cx="180" cy="74" r="22" fill="#ff7a3d"/><path d="M180 64v12M180 82v.5" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
+  location:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><path d="M30 96c30-6 40-20 60-20s28 16 58 12" stroke="#9be8df" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M120 22c-16 0-28 12-28 28 0 20 28 40 28 40s28-20 28-40c0-16-12-28-28-28z" fill="#ff7a3d"/><circle cx="120" cy="50" r="10" fill="#fff"/><circle cx="196" cy="40" r="9" fill="#ffd27a"/></svg>',
+  lock:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#fdeef0"/><rect x="88" y="50" width="64" height="46" rx="9" fill="#fff" stroke="#e23d52" stroke-width="2.5"/><path d="M100 50V38a20 20 0 0140 0v12" stroke="#e23d52" stroke-width="2.5" fill="none"/><circle cx="120" cy="70" r="6" fill="#e23d52"/><path d="M120 76v8" stroke="#e23d52" stroke-width="3" stroke-linecap="round"/><circle cx="46" cy="44" r="12" fill="#ffd27a"/><circle cx="196" cy="66" r="9" fill="#f7a9b3"/></svg>',
+  group:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#e7f9f4"/><circle cx="120" cy="40" r="14" fill="#10b6a8"/><path d="M96 88c0-13 11-23 24-23s24 10 24 23" fill="#10b6a8"/><circle cx="74" cy="52" r="10" fill="#1c4fa0"/><path d="M56 90c0-10 8-17 18-17" stroke="#1c4fa0" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="166" cy="52" r="10" fill="#ff7a3d"/><path d="M184 90c0-10-8-17-18-17" stroke="#ff7a3d" stroke-width="6" fill="none" stroke-linecap="round"/></svg>',
+  help:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#e7f9f4"/><circle cx="120" cy="55" r="30" fill="#fff" stroke="#10b6a8" stroke-width="3"/><path d="M111 47a9 9 0 0118 1c0 6-9 6-9 13" stroke="#10b6a8" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="120" cy="72" r="2.4" fill="#10b6a8"/><path d="M70 40l-10-6M76 60l-14 2M176 40l10-6M170 60l14 2" stroke="#ffd27a" stroke-width="4" stroke-linecap="round"/></svg>',
+  eye:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><path d="M70 55c14-20 36-30 50-30s36 10 50 30c-14 20-36 30-50 30s-36-10-50-30z" fill="#fff" stroke="#1c4fa0" stroke-width="2.5"/><circle cx="120" cy="55" r="14" fill="#dbe7fb"/><circle cx="120" cy="55" r="7" fill="#1c4fa0"/><circle cx="124" cy="51" r="2.4" fill="#fff"/><path d="M44 40l-8-5M40 60l-12 3M196 40l8-5M200 60l12 3" stroke="#ffd27a" stroke-width="4" stroke-linecap="round"/></svg>',
+  clock:'<svg viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet"><rect width="240" height="110" rx="14" fill="#eef3fb"/><circle cx="120" cy="55" r="34" fill="#fff" stroke="#1c4fa0" stroke-width="3"/><path d="M120 34v22l16 12" stroke="#ff7a3d" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="120" cy="55" r="3.5" fill="#1c4fa0"/><circle cx="120" cy="24" r="2.5" fill="#9bb6e0"/><circle cx="151" cy="55" r="2.5" fill="#9bb6e0"/><circle cx="120" cy="86" r="2.5" fill="#9bb6e0"/><circle cx="89" cy="55" r="2.5" fill="#9bb6e0"/><circle cx="46" cy="44" r="11" fill="#9be8df"/><circle cx="196" cy="66" r="9" fill="#ffd27a"/></svg>'
 };
 
 const MODULES = [];
 
-/* ============ MODULO 1 — VIVERE ONLIFE ============ */
+/* ============================================================
+   MODULO 1 — VIVERE ONLIFE  (una lezione: 8 attività studente)
+============================================================ */
 MODULES.push({
-  id:'m1', num:1, color:'#5b2be0', icon:ICON.globe,
-  title:'Vivere onlife', subtitle:'Contesto, rischi e opportunità del mondo connesso',
+  id:'m1', num:1, color:'#1c4fa0', icon:ICON.globe,
+  title:'Vivere onlife', subtitle:'Il digitale è dentro la tua giornata: scegli come viverlo',
   lesson:`
-    <h3>${ICON.globe} Che cosa significa vivere «onlife»</h3>
-    <p>Oggi non esiste più un confine netto tra vita <i>online</i> e vita <i>offline</i>: viviamo <b>onlife</b>, immersi in una realtà dove il digitale è parte di studio, relazioni, gioco e informazione. Essere cittadini competenti significa saper cogliere le <b>opportunità</b> della rete riconoscendone i <b>rischi</b>.</p>
-    <h4>Le competenze digitali (DigComp 2.2)</h4>
-    <p>Il quadro europeo <b>DigComp 2.2</b> definisce 5 aree di competenza del cittadino digitale:</p>
-    <ul>
-      <li><b>Alfabetizzazione su informazioni e dati</b> — cercare, valutare, gestire le informazioni.</li>
-      <li><b>Comunicazione e collaborazione</b> — interagire e condividere in modo responsabile.</li>
-      <li><b>Creazione di contenuti digitali</b> — produrre e rielaborare, nel rispetto del copyright.</li>
-      <li><b>Sicurezza</b> — proteggere dispositivi, dati personali, salute e ambiente.</li>
-      <li><b>Risolvere problemi</b> — usare il digitale in modo creativo per bisogni reali.</li>
-    </ul>
-    <div class="callout dang">In Italia il livello di competenze digitali è tra i più bassi d'Europa: l'<b>analfabetismo digitale</b> ha costi economici e sociali concreti. Colmare questo divario è una sfida educativa, non solo tecnica.</div>
-    <h4>Opportunità e rischi</h4>
-    <p><span class="pill">+ accesso al sapere</span><span class="pill">+ partecipazione</span><span class="pill">+ creatività</span><span class="pill">+ relazioni</span></p>
-    <p><span class="pill">– disinformazione</span><span class="pill">– dipendenza</span><span class="pill">– furto dati</span><span class="pill">– cyberbullismo</span></p>
+    <h3>${ICON.globe} Online e offline sono la stessa vita</h3>
+    <p>Non «entri» e «esci» da internet: vivi <b>onlife</b>, in una realtà dove digitale e fisico si mescolano di continuo. Ogni gesto online (una storia, un commento, un like) ha conseguenze <b>reali</b> su di te e sugli altri.</p>
+    <p>Essere cittadini competenti non significa sapere tutto a memoria, ma saper <b>scegliere bene nei momenti concreti</b>: quando hai fretta, quando sei stanco, quando «lo fanno tutti».</p>
+    <div class="callout tip">In questa lezione non ci sono quiz da indovinare: ci sono <b>situazioni vere</b> e attività diverse tra loro. In molte ti chiediamo due cose: cosa <i>sai</i> che sarebbe giusto fare e cosa <i>faresti davvero</i>. Essere sinceri qui è già un esercizio di cittadinanza.</div>
   `,
   student:[
-    { id:'m1s1', type:'quiz', icon:ICON.quiz, title:'Quiz: Quanto sei onlife?',
-      desc:'Verifica le tue conoscenze sul mondo connesso e sulle competenze digitali.',
-      questions:[
-        {q:'Cosa significa vivere «onlife»?', options:['Stare sempre connessi a internet','Una vita in cui online e offline si fondono','Usare solo i social network','Lavorare da remoto'], correct:1, explain:'Onlife indica la fusione tra esperienza digitale e fisica nella vita quotidiana.'},
-        {q:'Quante sono le aree di competenza del quadro DigComp 2.2?', options:['3','5','8','10'], correct:1, explain:'DigComp 2.2 individua 5 aree di competenza digitale del cittadino.'},
-        {q:'Quale NON è un\'area DigComp?', options:['Sicurezza','Creazione di contenuti','Programmazione di videogiochi','Comunicazione e collaborazione'], correct:2, explain:'Le aree riguardano competenze trasversali del cittadino, non lo sviluppo di videogiochi.'},
-        {q:'L\'analfabetismo digitale in Italia è...', options:['Un problema risolto','Tra i più bassi d\'Europa come competenze','Solo un problema degli anziani','Irrilevante per l\'economia'], correct:1, explain:'L\'Italia è agli ultimi posti in Europa per competenze digitali, con costi economici e sociali.'}
-      ]},
-    { id:'m1s2', type:'reflect', icon:ICON.search, title:'La mia impronta digitale',
-      desc:'Una piccola indagine pratica su ciò che lasci in rete.',
-      prompts:[
-        'Cerca il tuo nome e cognome su un motore di ricerca: che cosa appare? Scrivi qui cosa hai trovato (foto, profili, nulla...).',
-        'Elenca 3 informazioni personali che hai pubblicato online nell\'ultima settimana (anche storie/stati).',
-        'Quali di queste informazioni potrebbero essere usate da uno sconosciuto? Spiega perché.'
-      ]}
+    { id:'m1s1', type:'scenario', icon:ICON.location, art:'location', title:'«So dove sei stata oggi»',
+      desc:'Una storia pubblicata, uno sconosciuto che sa troppo. Tu cosa fai?',
+      setting:`Hai appena pubblicato una storia mentre eri in piazza con gli amici. Cinque minuti dopo un profilo che non conosci — foto vuota, nessun amico in comune — mette like a tutte le tue foto e ti scrive: «Ciao, ti ho vista in centro oggi, sei carina». Il cuore ti batte un po': come fa a sapere dov'eri?`,
+      choices:[
+        {text:'Rispondo per capire chi è', good:false, outcome:`Rispondere conferma a uno sconosciuto che il tuo account è reale e attivo, e apre un dialogo che non hai scelto. Spesso è proprio l'aggancio che cercava.`},
+        {text:'Blocco e segnalo il profilo, poi controllo chi può vedere le mie storie', good:true, outcome:`Mossa da cittadino digitale esperto: tagli il contatto e riprendi il controllo di chi ti vede. La geolocalizzazione nelle storie è spesso il vero «indizio» che ti espone.`},
+        {text:'Non rispondo, ma lascio tutto com\'è', good:false, outcome:`Ignorare è meglio che rispondere, ma con profilo e storie pubbliche continui a regalare a chiunque la tua posizione e le tue abitudini.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe giusto fare quando uno sconosciuto dimostra di sapere dove sei stato/a?',
+             real:`E in quel momento, con la curiosità di scoprire chi è... cosa faresti DAVVERO?` },
+      insight:`Quasi sempre «so cosa è giusto» (bloccare) e «cosa farei» (sbirciare per curiosità) non coincidono. È normale. La differenza la fa decidere la reazione PRIMA: se sai già cosa farai, nel momento agisci invece di farti trascinare.` },
+
+    { id:'m1s2', type:'hottext', icon:ICON.eye, art:'phone', title:'Quanto stai dicendo di te?',
+      desc:'Una didascalia innocente. Ma quante informazioni regala?',
+      intro:`Stai per pubblicare questa storia. Prima di premere «invia», rileggila con gli occhi di uno sconosciuto.`,
+      prompt:'Tocca tutte le informazioni che è meglio NON rendere pubbliche.',
+      tokens:[
+        {t:'Che noia,'},{t:'sono'},{t:'a'},{t:'casa'},{t:'da'},{t:'sola'},{t:'fino'},{t:'alle'},{t:'20',bad:true},
+        {t:'in'},{t:'via'},{t:'Garibaldi'},{t:'12',bad:true},{t:'.'},{t:'I'},{t:'miei'},{t:'tornano'},{t:'tardi',bad:true},{t:','},
+        {t:'frequento'},{t:'la'},{t:'2B'},{t:'del'},{t:'Liceo'},{t:'Manzoni',bad:true},{t:'!'}
+      ],
+      badNote:'indirizzo, scuola, orari in cui sei sola: messe insieme dicono a uno sconosciuto dove trovarti e quando.',
+      insight:`Da soli sembrano dettagli banali; messi insieme disegnano la tua giornata e dove sei reperibile. Si chiama «oversharing»: la regola d'oro è chiedersi «lo direi a uno sconosciuto alla fermata del bus?».` },
+
+    { id:'m1s3', type:'categorize', icon:ICON.lock, art:'eye', title:'Pubblico o privato?',
+      desc:'Smista ogni informazione: si può condividere o va protetta?',
+      intro:`Non tutto ciò che ti riguarda è uguale. Allena l'occhio: cosa puoi mostrare e cosa è meglio tenere per te.`,
+      bins:['Si può condividere','Meglio tenere privato'],
+      items:[
+        {t:'Il mio sport o hobby preferito', bin:0},
+        {t:'La mia password', bin:1},
+        {t:'Una foto del tramonto', bin:0},
+        {t:'Il mio indirizzo di casa', bin:1},
+        {t:'Il numero di telefono', bin:1},
+        {t:'Il mio cantante del cuore', bin:0},
+        {t:'La posizione in tempo reale', bin:1},
+        {t:'Un disegno che ho fatto', bin:0}
+      ],
+      insight:`I dati che ti identificano o ti localizzano (indirizzo, telefono, posizione, password) vanno protetti. I gusti e le passioni puoi condividerli: raccontano chi sei senza esporti.` },
+
+    { id:'m1s4', type:'hotspot', icon:ICON.location, art:'phone', title:'Prima di pubblicare la storia',
+      desc:'C\'è un dettaglio che ti espone. Trovalo e disattivalo.',
+      intro:`Stai per pubblicare. Una sola di queste impostazioni regala a tutti la tua posizione esatta.`,
+      prompt:'Tocca l\'impostazione da disattivare prima di pubblicare.',
+      scene:`<svg viewBox="0 0 100 64" preserveAspectRatio="xMidYMid meet"><rect width="100" height="64" rx="6" fill="#0f2747"/><rect x="34" y="6" width="32" height="52" rx="4" fill="#fff"/><rect x="38" y="10" width="24" height="20" rx="2" fill="#cfe0f7"/><text x="50" y="23" font-size="4" text-anchor="middle" fill="#1c4fa0" font-family="sans-serif">storia</text></svg>`,
+      spots:[
+        {x:34.5,y:50,w:31,h:6, correct:true, feedback:'Esatto! Disattivando la posizione, la storia non rivela più dove sei.', label:'📍 Aggiungi posizione: ATTIVA'},
+        {x:34.5,y:33,w:31,h:6, correct:false, feedback:'Questo è solo il filtro colore: non c\'entra con la tua sicurezza.', label:'🎨 Filtro'},
+        {x:34.5,y:41,w:31,h:6, correct:false, feedback:'Aggiungere musica non ti espone: cerca l\'impostazione che dice dove ti trovi.', label:'🎵 Musica'}
+      ],
+      insight:`Il geotag (la posizione) è il dettaglio che trasforma una foto innocua in un indizio su dove sei adesso. Disattivarlo è un gesto di pochi secondi che cambia tutto.` },
+
+    { id:'m1s5', type:'scenario', icon:ICON.clock, art:'clock', title:'«Solo cinque minuti»',
+      desc:'Il tempo che sparisce. Una scena che conosci bene.',
+      setting:`Sono le 16, ti siedi per «cinque minuti» di telefono prima dei compiti. Apri una notifica, parte un video, poi un altro, poi un altro ancora. Quando rialzi gli occhi sono le 18:30. Domani hai una verifica e non hai ancora aperto il libro. Senti un misto di colpa e di «vabbè, ormai».`,
+      choices:[
+        {text:'Continuo, tanto ormai è tardi', good:false, outcome:`La trappola del «ormai»: ogni minuto in più rende più difficile iniziare. Le app sono progettate proprio per tenerti dentro questo loop.`},
+        {text:'Metto il telefono in un\'altra stanza e inizio subito, anche solo 20 minuti', good:true, outcome:`Allontanare fisicamente il telefono è la strategia più efficace che esista: togli la tentazione invece di combatterla con la forza di volontà.`},
+        {text:'Faccio i compiti con il telefono accanto', good:false, outcome:`Bastano una vibrazione e uno sguardo per ricominciare il giro. Studiare col telefono accanto allunga i tempi e abbassa la concentrazione.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe la scelta giusta in un pomeriggio così?',
+             real:`E tu, davvero, con quel video che parte da solo e la stanchezza... cosa faresti?` },
+      insight:`Il punto non è «avere più forza di volontà», ma cambiare l'ambiente: telefono lontano, notifiche spente, un timer. Si progetta la situazione, non si combatte la tentazione.` },
+
+    { id:'m1s6', type:'dropdown', icon:ICON.think, art:'phone', title:'Le mie regole anti-loop',
+      desc:'Completa le frasi scegliendo l\'abitudine più sana.',
+      intro:`Costruisci la tua «cassetta degli attrezzi» per non farti risucchiare dallo schermo.`,
+      parts:[
+        'Quando devo studiare, il telefono lo tengo ',
+        {opts:['sul banco','in un\'altra stanza','in mano'], correct:1},
+        '. Di notte le notifiche sono ',
+        {opts:['attive','silenziate','con suono alto'], correct:1},
+        '. Se sento il bisogno di controllarlo di continuo, ',
+        {opts:['cedo subito','mi do un orario fisso per farlo','lo guardo di nascosto'], correct:1},
+        '.'
+      ],
+      insight:`Non servono regole eroiche: bastano piccole abitudini che riducono le occasioni di distrazione. Decidere PRIMA dove sta il telefono è metà del lavoro.` },
+
+    { id:'m1s7', type:'reorder', icon:ICON.sort, art:'phone', title:'Storia solo per gli amici stretti',
+      desc:'Metti in ordine i passi per pubblicare in modo riservato.',
+      intro:`Vuoi condividere un momento ma solo con chi ti fidi. Riordina i passaggi (usa le frecce).`,
+      steps:[
+        'Apro la fotocamera e scatto la storia',
+        'Tocco «Impostazioni privacy» della storia',
+        'Scelgo «Amici stretti» invece di «Tutti»',
+        'Controllo che la posizione sia disattivata',
+        'Pubblico solo per la cerchia scelta'
+      ],
+      insight:`La privacy non è «non pubblicare mai»: è scegliere con consapevolezza CHI vede cosa. Quasi tutte le app permettono cerchie ristrette: usarle è normale, non paranoico.` },
+
+    { id:'m1s8', type:'scenario', icon:ICON.people, art:'group', title:'Chi sei, online?',
+      desc:'Il gruppo ride di un video. A te dà fastidio, ma «è solo per ridere».',
+      setting:`Nel gruppo gira un video imbarazzante di un ragazzo di un'altra classe, che non sa di essere ripreso. Tutti ridono e qualcuno scrive «giralo a tutti, fa troppo ridere». Tu non lo trovi divertente: quel ragazzo ci farebbe una figuraccia con mezza scuola.`,
+      choices:[
+        {text:'Lo giro anch\'io, in fondo ridono tutti', good:false, outcome:`Quel video, una volta partito, non si ferma più. La «figuraccia» diventa permanente e tu sei uno degli anelli della catena.`},
+        {text:'Non lo giro e scrivo «dai, non è il caso, lasciamo stare»', good:true, outcome:`Hai usato la tua identità online per fermare qualcosa, non per alimentarlo. Spesso basta una voce diversa perché il gruppo cambi tono.`},
+        {text:'Non lo giro, ma sto zitto/a', good:false, outcome:`Non diffondere è già qualcosa, ma il silenzio lascia credere a tutti che sia normale. La tua identità onlife si costruisce anche con ciò che NON lasci passare.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe giusto fare con quel video?',
+             real:`E con tutto il gruppo che ride e ti aspetta, cosa faresti davvero?` },
+      insight:`Online sei ciò che condividi e ciò che lasci passare. La tua reputazione digitale non è una foto profilo: è la somma delle tue scelte, anche quelle piccole dentro un gruppo.` }
   ],
   parent:[
-    { id:'m1p1', type:'reflect', icon:ICON.think, title:'Riflessione: il modello che offro',
-      desc:'I figli imparano osservando. Fermati a riflettere sulle tue abitudini digitali.',
-      prompts:[
-        'Quante ore al giorno passo io stesso/a davanti a uno schermo? In quali momenti (a tavola, prima di dormire...)?',
-        'Che esempio di uso del digitale offro a mio/a figlio/a senza accorgermene?',
-        'Qual è un\'abitudine digitale familiare che vorrei migliorare nel prossimo mese?'
-      ]},
-    { id:'m1p2', type:'pact', icon:ICON.pact, title:'Primo passo del Patto Digitale Familiare',
-      desc:'Costruisci con la tua famiglia alcune regole condivise di partenza.',
+    { id:'m1p1', type:'scenario', icon:ICON.chat, art:'family', title:'Il telefono a tavola',
+      desc:'Una richiesta giusta... e una contraddizione difficile da ignorare.',
+      setting:`È ora di cena. Chiedi a tuo/a figlio/a di posare il telefono a tavola e lui/lei ribatte: «Ma anche tu rispondi sempre ai messaggi di lavoro mentre mangiamo». E ha ragione.`,
+      choices:[
+        {text:'Impongo la regola: «io sono adulto, è diverso»', good:false, outcome:`L'incoerenza tra ciò che chiediamo e ciò che facciamo è il messaggio più forte che arriva ai figli: vale più di mille spiegazioni.`},
+        {text:'Ammetto la contraddizione e proponiamo una regola valida per tutti', good:true, outcome:`I figli imparano dal modello, non dal predicozzo. Una regola condivisa che vincola anche te ha un'autorevolezza enorme.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe educativamente giusto fare in questa scena?',
+             real:`E nella vita reale, con il lavoro che incalza e le mail che arrivano, cosa faresti davvero?` },
+      insight:`«I figli imparano più da quello che facciamo che da quello che diciamo.» La coerenza non è perfezione: è ammettere ad alta voce quando sbagliamo anche noi.` },
+
+    { id:'m1p2', type:'checklist', icon:ICON.list, art:'family', title:'Le nostre zone «senza schermo»',
+      desc:'Quali confini sani avete già messo in casa? Spunta quelli attivi.',
       items:[
-        'Stabiliamo orari/zone "senza schermo" (es. a tavola, in camera la notte).',
+        'A tavola, niente telefono — per tutti, adulti compresi.',
+        'In camera, di notte, i dispositivi restano fuori.',
+        'C\'è un momento della giornata in cui ci parliamo senza schermi.',
+        'Gli orari «senza schermo» valgono anche per noi genitori.'
+      ],
+      insight:`Non sono divieti: sono spazi protetti per la relazione. E un confine che vale anche per l'adulto smette di sembrare una punizione.` },
+
+    { id:'m1p3', type:'pact', icon:ICON.pact, art:'family', title:'Primo passo del Patto Digitale di Famiglia',
+      desc:'Trasforma la riflessione in alcune promesse condivise di partenza.',
+      items:[
+        'Stabiliamo orari e zone «senza schermo» validi per tutti.',
         'Decidiamo insieme quali app e contenuti sono adatti all\'età.',
         'Ci raccontiamo qualcosa di bello e qualcosa di strano visto online ogni settimana.',
         'Gli adulti rispettano le stesse regole che chiedono ai figli.'
-      ]}
+      ],
+      insight:`Il patto «non è un elenco di divieti: è una promessa che ci facciamo a vicenda». Questo è solo il primo passo: lo completerete nel Modulo 4.` }
   ]
 });
 
-/* ============ MODULO 2 — SICUREZZA DIGITALE ============ */
+/* ============================================================
+   MODULO 2 — SICUREZZA DIGITALE  (8 attività studente)
+============================================================ */
 MODULES.push({
   id:'m2', num:2, color:'#e23d52', icon:ICON.shield,
-  title:'Sicurezza digitale', subtitle:'Minacce online e come difendersi',
+  title:'Sicurezza digitale', subtitle:'Truffe, account e dati: le decisioni che contano davvero',
   lesson:`
-    <h3>${ICON.shield} Proteggere la propria identità digitale</h3>
-    <p>Difendere i dati personali da accessi non autorizzati e mantenere il controllo su come vengono raccolti e condivisi è il cuore della sicurezza digitale. Ecco le <b>minacce più comuni</b>:</p>
-    <h4>Tecniche e minacce</h4>
-    <ul>
-      <li><b>Phishing</b> — messaggi falsi (email, SMS «smishing», telefonate «vishing») che imitano enti ufficiali per rubare credenziali o dati.</li>
-      <li><b>Malware</b> — virus, trojan, <b>spyware/keylogger</b>, <b>ransomware</b> (bloccano i file e chiedono un riscatto), botnet.</li>
-      <li><b>Social engineering</b> — manipolazione psicologica: pretexting, baiting (chiavette USB «perdute»), quiz-trappola.</li>
-      <li><b>Furto d'identità</b> e <b>data breach</b> — violazioni che espongono grandi archivi di dati.</li>
-      <li><b>Deepfake</b> — audio/video manipolati con l'IA; <b>doxing</b> — diffusione non autorizzata di dati personali.</li>
-    </ul>
-    <h4>Buone pratiche di protezione</h4>
-    <div class="callout tip">
-      <b>Password robuste</b> (lunghe, uniche) · <b>Password manager</b> · <b>Autenticazione a due fattori (2FA)</b> · <b>Aggiornamenti</b> regolari · attenzione al phishing · <b>backup</b> periodici · uso consapevole dei social.
-    </div>
+    <h3>${ICON.shield} La sicurezza si gioca in pochi secondi</h3>
+    <p>Phishing, malware, furto d'identità, deepfake: dietro le parole difficili ci sono <b>momenti concreti</b> in cui devi decidere in fretta — un SMS che sembra vero, un amico che ti chiede una password, un link «troppo bello».</p>
+    <p>Chi truffa non punta sulla tecnologia, ma sulle <b>emozioni</b>: fretta, paura, curiosità, fiducia. Riconoscere l'emozione che ti stanno tirando è già metà della difesa.</p>
+    <div class="callout tip"><b>Le tue armi:</b> password lunghe e diverse · autenticazione a due fattori (2FA) · verificare sempre dal canale ufficiale · non condividere mai le credenziali · nel dubbio, fermarsi e chiedere.</div>
   `,
   student:[
-    { id:'m2s1', type:'phishing', icon:ICON.hook, title:'Phishing Detective',
-      desc:'Esamina ogni email: è una truffa o è legittima? Poi scopri gli indicatori di rischio.',
-      emails:[
-        { from:'support@banca-safe.com', subject:'URGENTE: il tuo conto è stato sospeso!',
-          body:'Gentile cliente,\nabbiamo rilevato un accesso sospetto al suo conto online.\nClicchi subito sul link per verificare la sua identità:\n[[www.bancasicura-verify.it]]\nSe non conferma entro 24 ore, il conto verrà chiuso.',
-          phishing:true, indicators:['Mittente generico (banca-safe.com non corrisponde alla banca)','Pressione psicologica: "entro 24 ore"','Link con dominio falso','Errore linguistico: "Clicchi subito"'] },
-        { from:'noreply@deliveryexpress-support.com', subject:'Il tuo pacco non può essere consegnato',
-          body:'Ciao,\nil corriere non ha potuto consegnarti il pacco perché mancano informazioni sull\'indirizzo.\nPer riceverlo, conferma i tuoi dati di pagamento cliccando qui:\n[[Aggiorna indirizzo]]',
-          phishing:true, indicators:['Nessun numero d\'ordine né nome del destinatario','Richiesta di dati di pagamento non giustificata','Dominio sospetto, non un corriere reale'] },
-        { from:'comunicazioni@iclamiascuola.edu.it', subject:'Calendario colloqui di gennaio',
-          body:'Gentili studenti,\nin allegato trovate il calendario dei colloqui. Per qualsiasi dubbio rispondete a questa email o rivolgetevi in segreteria negli orari di apertura.\nCordiali saluti,\nLa Segreteria',
-          phishing:false, indicators:['Dominio ufficiale .edu.it','Nessuna richiesta di credenziali o pagamenti','Nessuna pressione o urgenza anomala'] }
-      ]},
-    { id:'m2s2', type:'password', icon:ICON.key, title:'Laboratorio Password',
-      desc:'Prova a creare una password e guarda in tempo reale quanto è robusta.' },
-    { id:'m2s3', type:'flashcards', icon:ICON.cards, title:'Glossario delle minacce',
-      desc:'Gira le carte e memorizza i termini chiave della cybersicurezza.',
-      cards:[
-        {f:'Phishing',b:'Truffa che imita messaggi ufficiali per rubare dati o credenziali.'},
-        {f:'Ransomware',b:'Malware che blocca i file e chiede un riscatto per sbloccarli.'},
-        {f:'Spyware',b:'Software che spia di nascosto attività e digitazioni (keylogger).'},
-        {f:'Social engineering',b:'Manipolazione psicologica per farsi rivelare informazioni.'},
-        {f:'Deepfake',b:'Audio/video falsi creati con l\'IA per ingannare.'},
-        {f:'Doxing',b:'Diffusione pubblica non autorizzata di dati personali per intimidire.'},
-        {f:'2FA',b:'Autenticazione a due fattori: un codice extra oltre alla password.'},
-        {f:'Data breach',b:'Violazione che espone grandi archivi di dati personali.'}
-      ]}
+    { id:'m2s1', type:'scenario', icon:ICON.hook, art:'chat', title:'Il pacco «in giacenza»',
+      desc:'Aspetti davvero un pacco. E arriva questo messaggio.',
+      setting:`Stai aspettando sul serio un pacco. Ti arriva un SMS: «BRT: spedizione in giacenza. Salda 1,99€ per la consegna entro oggi -> brt-pagamento.info». Il link sembra quasi vero e tu il pacco lo aspetti davvero. Sono solo 1,99€...`,
+      choices:[
+        {text:'Clicco e pago, è una cifra piccola', good:false, outcome:`La cifra ridicola è proprio la trappola: ti sembra innocua e abbassi la guardia. In realtà stai consegnando i dati della carta a dei truffatori.`},
+        {text:'Apro l\'app o il sito UFFICIALE del corriere e controllo col codice di spedizione', good:true, outcome:`Perfetto: verifichi sempre dal canale ufficiale, mai dal link nel messaggio. Se non risulta nulla, era una truffa.`},
+        {text:'Giro l\'SMS in famiglia per chiedere un parere', good:true, outcome:`Ottimo riflesso: fermarsi e chiedere a qualcuno spezza l'urgenza, che è l'arma principale di chi truffa.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe giusto fare con un messaggio così?',
+             real:`E tu, che il pacco lo aspetti davvero e sono «solo» 1,99€... cosa faresti davvero?` },
+      insight:`Le truffe migliori arrivano quando il messaggio «ci sta» con la tua vita. La regola che non sbaglia mai: i dati di pagamento si inseriscono solo partendo dal sito ufficiale, mai da un link ricevuto.` },
+
+    { id:'m2s2', type:'hottext', icon:ICON.alert, art:'chat', title:'Smaschera il phishing',
+      desc:'Un\'email che sembra della tua banca. Cosa non torna?',
+      intro:`Leggi questa email con attenzione. Tre dettagli tradiscono il truffatore.`,
+      prompt:'Tocca i 3 segnali sospetti.',
+      tokens:[
+        {t:'Gentile'},{t:'Cliente,'},{t:'abbiamo'},{t:'rilevato'},{t:'un'},{t:'accesso'},{t:'sospetto'},{t:'.'},
+        {t:'Verifica'},{t:'ENTRO'},{t:'1'},{t:'ORA',bad:true},{t:'o'},{t:'il'},{t:'conto'},{t:'sarà'},{t:'bloccato'},{t:'.'},
+        {t:'Clicca:'},{t:'www.banca-sicura-verifica.net',bad:true},{t:'.'},
+        {t:'Inserisci'},{t:'PIN'},{t:'e'},{t:'password',bad:true},{t:'.'}
+      ],
+      badNote:'l\'urgenza estrema («entro 1 ora»), un indirizzo web strano e non ufficiale, e la richiesta di PIN/password: nessuna banca vera fa così.',
+      insight:`Le banche non chiedono MAI PIN o password via email/SMS, non mettono fretta e usano solo il loro sito ufficiale. Se trovi anche uno solo di questi segnali: è phishing.` },
+
+    { id:'m2s3', type:'password', icon:ICON.key, art:'lock', title:'Quanto regge la tua password?',
+      desc:'Prova a crearne una e guarda in tempo reale dove cede.' },
+
+    { id:'m2s4', type:'categorize', icon:ICON.shield, art:'shield', title:'Sicuro o rischioso?',
+      desc:'Smista ogni abitudine: ti protegge o ti espone?',
+      intro:`Riconoscere le abitudini rischiose è il primo passo per cambiarle.`,
+      bins:['Comportamento sicuro','Comportamento rischioso'],
+      items:[
+        {t:'Uso la stessa password ovunque', bin:1},
+        {t:'Ho attivato l\'autenticazione a due fattori', bin:0},
+        {t:'Clicco i link senza guardare il mittente', bin:1},
+        {t:'Aggiorno app e sistema quando me lo chiede', bin:0},
+        {t:'Scarico app solo dagli store ufficiali', bin:0},
+        {t:'Uso il Wi-Fi pubblico per accedere alla banca', bin:1},
+        {t:'Blocco il telefono con PIN o impronta', bin:0},
+        {t:'Salvo le password in un foglio di note pubblico', bin:1}
+      ],
+      insight:`La sicurezza non è una cosa sola: è la somma di tante piccole abitudini. Anche solo passare metà di queste da «rischioso» a «sicuro» ti rende un bersaglio molto più difficile.` },
+
+    { id:'m2s5', type:'reorder', icon:ICON.sort, art:'lock', title:'Mi hanno rubato l\'account!',
+      desc:'Riordina i passi giusti, dal primo all\'ultimo.',
+      intro:`Scopri di non riuscire più ad entrare nel tuo profilo: qualcuno ha cambiato la password. Niente panico: riordina le mosse.`,
+      steps:[
+        'Provo subito la procedura «Password dimenticata» dall\'app ufficiale',
+        'Reimposto la password con il codice ricevuto via email/SMS',
+        'Attivo l\'autenticazione a due fattori',
+        'Controllo che email e telefono di recupero siano i miei',
+        'Avviso un adulto e, se servono soldi o ci sono minacce, la Polizia Postale'
+      ],
+      insight:`Agire in fretta ma in ordine fa la differenza: prima riprendi il controllo, poi blindi l'account, infine chiedi aiuto. Non vergognarti: capita anche agli esperti.` },
+
+    { id:'m2s6', type:'dropdown', icon:ICON.lock, art:'lock', title:'Costruisci la difesa perfetta',
+      desc:'Completa le frasi con la scelta più sicura.',
+      intro:`Mettiamo insieme le regole d'oro della sicurezza.`,
+      parts:[
+        'Una buona password è ',
+        {opts:['corta e facile','lunga e diversa per ogni sito','il mio nome e l\'anno'], correct:1},
+        '. Oltre alla password, attivo ',
+        {opts:['l\'autenticazione a due fattori','niente, basta così','lo stesso PIN ovunque'], correct:0},
+        '. Se un sito mi chiede dati e l\'indirizzo è strano, ',
+        {opts:['inserisco i dati lo stesso','chiudo e verifico dal sito ufficiale','ci clicco per curiosità'], correct:1},
+        '.'
+      ],
+      insight:`Password lunga e unica + due fattori + diffidenza verso i link: con queste tre regole eviti la stragrande maggioranza dei guai online.` },
+
+    { id:'m2s7', type:'scenario', icon:ICON.key, art:'shield', title:'«Dammi la tua password, ti aiuto io»',
+      desc:'Te lo chiede il tuo migliore amico. Ti fidi.',
+      setting:`Il tuo migliore amico ti scrive: «Dammi la password del tuo account di gioco, mentre sei a scuola ti faccio salire di livello, sono bravissimo». Ti fidi di lui e l'offerta è davvero allettante.`,
+      choices:[
+        {text:'Gliela do, è il mio migliore amico', good:false, outcome:`Anche le persone fidate possono perdere la password, farsela rubare o usarla male se un giorno litigate. Una password condivisa non è più sotto il tuo controllo.`},
+        {text:'Dico di no e gli propongo di giocare insieme dal mio account quando ci sono anch\'io', good:true, outcome:`Hai protetto l'account senza rovinare l'amicizia. La password è come lo spazzolino: non si presta, nemmeno ai migliori amici.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe giusto rispondere a questa richiesta?',
+             real:`E davvero, di fronte al tuo migliore amico che si offre di aiutarti, cosa faresti?` },
+      insight:`Le credenziali non si condividono con nessuno, nemmeno per affetto. Dire di no a chi vogliamo bene è difficile: avere già una frase pronta («mai la password, ma giochiamo insieme!») rende tutto più facile.` },
+
+    { id:'m2s8', type:'hotspot', icon:ICON.lock, art:'lock', title:'Il sito è davvero sicuro?',
+      desc:'Stai per inserire dei dati. Dove guardi per capire se fidarti?',
+      intro:`Prima di scrivere i tuoi dati su un sito, un punto della schermata ti dice se la connessione è protetta.`,
+      prompt:'Tocca il punto che indica una connessione sicura.',
+      scene:`<svg viewBox="0 0 100 64" preserveAspectRatio="xMidYMid meet"><rect width="100" height="64" rx="6" fill="#e9eef6"/><rect x="6" y="8" width="88" height="10" rx="5" fill="#fff" stroke="#c3cede"/><circle cx="13" cy="13" r="2" fill="#1B6B3A"/><rect x="20" y="11" width="50" height="4" rx="2" fill="#cdd7e6"/><rect x="6" y="24" width="88" height="34" rx="4" fill="#fff" stroke="#c3cede"/><rect x="14" y="32" width="40" height="5" rx="2" fill="#dbe3ef"/><rect x="14" y="42" width="60" height="5" rx="2" fill="#dbe3ef"/></svg>`,
+      spots:[
+        {x:9,y:14,w:9,h:9, correct:true, feedback:'Esatto! Il lucchetto chiuso accanto all\'indirizzo indica una connessione cifrata (https).', label:'🔒'},
+        {x:20,y:17,w:50,h:6, correct:false, feedback:'Questo è il nome del sito: utile, ma da solo non garantisce la sicurezza. Cerca il lucchetto.', label:'indirizzo'},
+        {x:14,y:31,w:40,h:7, correct:false, feedback:'Questo è solo un campo del modulo: non dice nulla sulla sicurezza della connessione.', label:'campo'}
+      ],
+      insight:`Il lucchetto (https) significa che i dati viaggiano cifrati, ma attento: anche i siti-truffa possono avere il lucchetto. È necessario, non sufficiente: controlla SEMPRE anche che l'indirizzo sia quello ufficiale.` }
   ],
   parent:[
-    { id:'m2p1', type:'checklist', icon:ICON.list, title:'Checklist sicurezza in casa',
-      desc:'Verifica quali protezioni hai già attivato per la tua famiglia.',
+    { id:'m2p1', type:'scenario', icon:ICON.chat, art:'chat', title:'«Ho vinto un buono da 100€!»',
+      desc:'Tuo/a figlio/a ti mostra un messaggio. La tua reazione decide il futuro.',
+      setting:`Tuo/a figlio/a ti mostra tutto contento/a un messaggio: «Hai vinto un buono da 100€! Inserisci qui i dati della carta dei tuoi genitori per riceverlo». È entusiasta all'idea del premio.`,
+      choices:[
+        {text:'Lo/la sgrido per essere stato/a così ingenuo/a', good:false, outcome:`Se associamo «mostrarmi le cose» a «essere sgridato», la prossima volta non ce le mostrerà più. E sarà allora che si troverà solo/a davanti ai guai.`},
+        {text:'Lo/la elogio per avermelo mostrato e analizziamo INSIEME i segnali della truffa', good:true, outcome:`Hai rinforzato la cosa più preziosa: la fiducia. E hai trasformato una truffa in una lezione pratica fatta insieme.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe la reazione giusta da genitore?',
+             real:`E nel momento, con la paura che caschi nelle truffe, cosa faresti davvero?` },
+      insight:`«Chi sbaglia viene aiutato, non giudicato.» Il vero scudo dei figli online non è il controllo, ma sapere che possono raccontarti tutto senza essere giudicati.` },
+
+    { id:'m2p2', type:'categorize', icon:ICON.shield, art:'shield', title:'In casa: già fatto o da fare?',
+      desc:'Smista queste protezioni in base alla vostra situazione reale.',
+      intro:`Una fotografia onesta di dove siete: serve a decidere il prossimo piccolo passo, non a sentirsi in colpa.`,
+      bins:['Già attivo da noi','Ancora da fare'],
+      items:[
+        {t:'2FA sugli account principali della famiglia', bin:0},
+        {t:'Backup di foto e documenti importanti', bin:1},
+        {t:'Profili social dei figli impostati su «privato»', bin:0},
+        {t:'Parlato in famiglia di come riconoscere le truffe', bin:1}
+      ],
+      insight:`Non serve fare tutto oggi. Scegliete UNA voce dalla colonna «da fare» e mettetela in agenda per questa settimana.` },
+
+    { id:'m2p3', type:'checklist', icon:ICON.list, art:'shield', title:'Checklist sicurezza in casa',
+      desc:'Spunta le protezioni che decidete di adottare insieme.',
       items:[
         'I dispositivi di casa hanno password o PIN diversi e robusti.',
-        'Ho attivato l\'autenticazione a due fattori sugli account principali.',
+        'Abbiamo attivato l\'autenticazione a due fattori sugli account principali.',
         'Software e app sono aggiornati all\'ultima versione.',
-        'Abbiamo parlato in famiglia di come riconoscere email e messaggi truffa.',
-        'Facciamo backup periodici delle foto e dei documenti importanti.',
-        'Le impostazioni dei social dei figli sono su "profilo privato".'
-      ]},
-    { id:'m2p2', type:'reflect', icon:ICON.think, title:'Riflessione: e se capitasse a noi?',
-      desc:'Leggi lo scenario e immagina come reagireste come famiglia.',
-      scenario:'Tuo/a figlio/a riceve un messaggio: «Hai vinto un buono da 100€, inserisci qui i dati della carta dei tuoi genitori per riceverlo».',
-      prompts:[
-        'Come vorresti che tuo/a figlio/a reagisse di fronte a questo messaggio?',
-        'Si sentirebbe libero/a di parlartene, o avrebbe paura di essere sgridato/a? Cosa puoi fare perché si fidi di te?',
-        'Quale regola semplice potete darvi per i messaggi che chiedono dati o denaro?'
-      ]}
+        'Facciamo backup periodici di foto e documenti importanti.',
+        'Sappiamo riconoscere insieme messaggi e link truffa.'
+      ],
+      insight:`La sicurezza domestica è un lavoro di squadra: quando una regola vale per tutti, è più facile che resista nel tempo.` }
   ]
 });
 
-/* ============ MODULO 3 — ESSERE CITTADINI DIGITALI ============ */
+/* ============================================================
+   MODULO 3 — ESSERE CITTADINI DIGITALI  (8 attività studente)
+============================================================ */
 MODULES.push({
   id:'m3', num:3, color:'#10b6a8', icon:ICON.people,
-  title:'Essere cittadini digitali', subtitle:'Pensiero critico, rispetto e partecipazione',
+  title:'Essere cittadini digitali', subtitle:'Verità, rispetto e coraggio quando «lo fanno tutti»',
   lesson:`
-    <h3>${ICON.people} Diritti, responsabilità e spirito critico</h3>
-    <p>Essere cittadini digitali significa partecipare alla vita online con <b>consapevolezza</b>, rispettando gli altri e verificando le informazioni prima di condividerle.</p>
-    <h4>Riconoscere le fake news</h4>
-    <p>Prima di credere o condividere una notizia, chiediti:</p>
-    <ul>
-      <li><b>Chi è la fonte?</b> È autorevole e identificabile?</li>
-      <li><b>Altri siti</b> affidabili confermano la notizia?</li>
-      <li>Il <b>linguaggio</b> è emotivo o sensazionalistico?</li>
-      <li>Mancano <b>dati o prove</b> verificabili?</li>
-    </ul>
-    <div class="callout tip">Strumenti utili: siti di fact-checking (Facta, Butac, Open), <b>ricerca immagini inversa</b> (Google Immagini, TinEye), il metodo <b>SIFT</b> (Stop, Investiga la fonte, trova fonti migliori, risali al contesto).</div>
-    <h4>Contrastare i discorsi d'odio (hate speech)</h4>
-    <p>Gli <b>stereotipi</b> impliciti alimentano discriminazioni online e offline. Riconoscerli è il primo passo per usare un linguaggio <b>inclusivo e rispettoso</b>, trasformando i commenti d'odio in messaggi costruttivi.</p>
+    <h3>${ICON.people} Dietro ogni schermo c'è una persona vera</h3>
+    <p>Essere cittadini digitali significa partecipare con la testa e con il cuore: <b>verificare</b> prima di condividere e <b>rispettare</b> anche quando il gruppo va in un'altra direzione.</p>
+    <p>Le scelte più difficili online non sono quelle in cui «non sai»: sono quelle in cui <b>sai benissimo</b> cosa è giusto, ma farlo significa andare controcorrente.</p>
+    <div class="callout">Prima di condividere una notizia chiediti: <b>chi è la fonte?</b> · la confermano <b>fonti affidabili</b>? · il linguaggio è <b>sensazionalistico</b>? · ci sono <b>prove</b>? Strumenti utili: fact-checking (Facta, Butac, Open) e la ricerca immagini inversa.</div>
   `,
   student:[
-    { id:'m3s1', type:'factcheck', icon:ICON.search, title:'Laboratorio di Fact-checking',
-      desc:'Analizza questa notizia con le domande-guida e dai il tuo verdetto.',
-      news:{ title:'«SCIOCCANTE! Bere acqua e limone ogni mattina elimina QUALSIASI malattia, lo nascondono i medici!»',
-             source:'salute-naturale-news.blogspot — articolo senza autore, 4.300 condivisioni' },
-      checks:[
-        {q:'La fonte è autorevole e identificabile?', no:'Esatto: un blog anonimo senza autore non è una fonte affidabile.'},
-        {q:'Il linguaggio è neutro e informativo?', no:'Giusto: parole come "SCIOCCANTE" e "lo nascondono i medici" sono sensazionalismo.'},
-        {q:'Ci sono dati, studi o prove verificabili?', no:'Corretto: non viene citato nessuno studio scientifico.'},
-        {q:'Altri siti affidabili confermano la notizia?', no:'Bene: una bufala raramente è confermata da fonti scientifiche serie.'}
+    { id:'m3s1', type:'scenario', icon:ICON.send, art:'news', title:'«È successo OGGI nella nostra città!»',
+      desc:'Un video shock nel gruppo classe. Il dito è già sul tasto «inoltra».',
+      setting:`Nel gruppo classe gira un video drammatico: «Guardate, è successo OGGI qui da noi!». Fa paura e fa rabbia. Hai il dito sul tasto «inoltra a tutti» perché ti sembra importante avvisare gli altri prima possibile.`,
+      choices:[
+        {text:'Inoltro subito, meglio avvisare tutti', good:false, outcome:`Se il video è falso o vecchio (capita spessissimo) hai appena diffuso panico e disinformazione, e ora porta la tua firma. Smentire dopo è quasi impossibile.`},
+        {text:'Cerco la notizia su fonti affidabili prima di condividere', good:true, outcome:`Bravissimo: bastano 30 secondi di ricerca per scoprire se è vera, vecchia o inventata. Chi verifica prima vale più di chi condivide per primo.`},
+        {text:'Scrivo nel gruppo: «qualcuno conosce la fonte?»', good:true, outcome:`Ottimo: inviti tutti a fermarsi a pensare, senza diffondere nulla. A volte una sola domanda blocca una catena di bufale.`}
       ],
-      verdictLabel:'Qual è il tuo verdetto finale?', fake:true,
-      fakeText:'È una FAKE NEWS. Fonte anonima, linguaggio sensazionalistico, nessuna prova: tutti segnali di disinformazione.' },
-    { id:'m3s2', type:'rewrite', icon:ICON.heart, title:'Trasforma l\'odio in rispetto',
-      desc:'Riscrivi questi commenti d\'odio in una forma inclusiva e costruttiva.',
+      dual:{ know:'Cosa sai che sarebbe giusto fare prima di inoltrare un contenuto del genere?',
+             real:`E con l'adrenalina del momento e la voglia di essere il primo ad avvisare, cosa faresti davvero?` },
+      insight:`La disinformazione corre perché tocca le emozioni e ci fa sentire utili nel condividerla. La cittadinanza digitale è quella pausa di 30 secondi: «è vero? lo confermano fonti serie?» prima di premere invia.` },
+
+    { id:'m3s2', type:'hottext', icon:ICON.alert, art:'news', title:'Il titolo che ti vuole arrabbiato',
+      desc:'Un titolo virale. Quali parole sono campanelli d\'allarme?',
+      intro:`Le bufale usano spesso lo stesso «trucco» linguistico per farti condividere d'istinto.`,
+      prompt:'Tocca le parole/segnali che fanno sospettare una bufala.',
+      tokens:[
+        {t:'SCANDALO',bad:true},{t:':'},{t:'quello'},{t:'che'},{t:'NON'},{t:'vogliono'},{t:'farti'},{t:'sapere',bad:true},{t:'!'},
+        {t:'Condividi'},{t:'PRIMA'},{t:'che'},{t:'lo'},{t:'CANCELLINO',bad:true},{t:'!!!',bad:true},
+        {t:'Fonte:'},{t:'«un'},{t:'amico'},{t:'di'},{t:'un'},{t:'medico»',bad:true}
+      ],
+      badNote:'maiuscole urlate, complotto («non vogliono farti sapere»), urgenza a condividere, troppi punti esclamativi e una fonte vaga e non verificabile.',
+      insight:`Quando un testo punta tutto sull'emozione (rabbia, paura, indignazione) e ti spinge a condividere SUBITO, è proprio lì che devi rallentare. La verità di solito non ha bisogno di urlare.` },
+
+    { id:'m3s3', type:'categorize', icon:ICON.search, art:'news', title:'Fonte affidabile o sospetta?',
+      desc:'Smista i segnali: ti fanno fidare o diffidare di una notizia?',
+      intro:`Imparare a «leggere» la fonte è la difesa numero uno contro le bufale.`,
+      bins:['Mi fa FIDARE','Mi fa DIFFIDARE'],
       items:[
-        {bad:'«Questi qui non sanno nemmeno parlare italiano, tornassero a casa loro!»'},
-        {bad:'«Le ragazze non capiscono niente di tecnologia, lascia perdere.»'},
-        {bad:'«Sei un disastro, non combinerai mai nulla nella vita.»'}
-      ]}
+        {t:'La notizia cita dati, date e nomi verificabili', bin:0},
+        {t:'Il sito ha un nome che imita una testata vera', bin:1},
+        {t:'La riportano più testate giornalistiche serie', bin:0},
+        {t:'Chiede solo di condividere, non spiega nulla', bin:1},
+        {t:'L\'autore è indicato e si può contattare', bin:0},
+        {t:'Le foto, cercate online, sono vecchie o di altri eventi', bin:1}
+      ],
+      insight:`Una fonte affidabile si fa controllare: dice chi è, porta prove e viene confermata da altri. Una bufala punta a farti agire prima che tu possa verificare.` },
+
+    { id:'m3s4', type:'reorder', icon:ICON.sort, art:'news', title:'I passi del fact-checking',
+      desc:'Riordina il metodo per smascherare una notizia dubbia.',
+      intro:`Hai un dubbio su una notizia. Mettendo in ordine questi passi, hai un metodo che funziona quasi sempre.`,
+      steps:[
+        'Mi fermo: non condivido finché non ho verificato',
+        'Guardo chi è la fonte e se è una testata seria',
+        'Cerco la stessa notizia su altri siti affidabili',
+        'Faccio la ricerca inversa dell\'immagine per vedere se è vecchia',
+        'Decido: se non trova conferme serie, NON la condivido'
+      ],
+      insight:`Verificare non è da «professoroni»: è un riflesso che con un po' di pratica diventa automatico. Chi sa fermarsi e controllare è già un cittadino digitale.` },
+
+    { id:'m3s5', type:'scenario', icon:ICON.heart, art:'chat', title:'«Dai, scrivi qualcosa anche tu»',
+      desc:'Commenti cattivi sotto la foto di una compagna. E tutti ridono.',
+      setting:`Sotto la foto di una tua compagna piovono commenti cattivi sul suo aspetto. Un amico ti tagga: «dai, scrivi qualcosa anche tu, è solo per ridere». Tutti sembrano divertirsi e tu non vuoi passare per quello/a che «non sta al gioco».`,
+      choices:[
+        {text:'Scrivo anch\'io un commento, tanto stanno scherzando', good:false, outcome:`Per chi lo riceve non è uno scherzo. Ogni commento in più dà forza al branco e dice alla compagna che è sola. E un giorno potresti essere tu, al suo posto.`},
+        {text:'Non commento, scrivo in privato alla compagna se sta bene e segnalo i commenti', good:true, outcome:`Hai fatto la cosa più coraggiosa e più rara: rompere il branco. Un solo gesto di vicinanza può cambiare completamente come si sente.`},
+        {text:'Rispondo pubblicamente cambiando tono: un commento gentile su di lei', good:true, outcome:`Hai spezzato la catena dell'odio davanti a tutti. Spesso basta una voce diversa perché anche altri trovino il coraggio di smettere.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe la cosa giusta da fare in questa situazione?',
+             real:`E davanti al gruppo che ride e all'amico che ti tagga, con la paura di restare escluso/a... cosa faresti davvero?` },
+      insight:`Questo è il caso in cui «cosa so» e «cosa farei» si allontanano di più, perché c'entra la paura di essere esclusi. Riconoscerlo non è una debolezza: è il punto da cui parte il coraggio.` },
+
+    { id:'m3s6', type:'dropdown', icon:ICON.chat, art:'chat', title:'Rispondere senza ferire',
+      desc:'Completa il messaggio per dire la tua, ma con rispetto.',
+      intro:`Non sei d'accordo con un commento, ma vuoi rispondere da cittadino digitale, non da leone da tastiera.`,
+      parts:[
+        'Invece di insultare, parto da ',
+        {opts:['un\'offesa più forte','quello su cui non sono d\'accordo','un\'accusa personale'], correct:1},
+        '. Uso un tono ',
+        {opts:['calmo e diretto','aggressivo','sarcastico e umiliante'], correct:0},
+        '. E se la discussione degenera, ',
+        {opts:['rilancio più pesante','mi fermo o segnalo','offendo per primo'], correct:1},
+        '.'
+      ],
+      insight:`Si può essere in totale disaccordo restando rispettosi. Attaccare l'idea, non la persona, è ciò che distingue un dibattito da una rissa. E dietro lo schermo c'è sempre qualcuno che legge.` },
+
+    { id:'m3s7', type:'scenario', icon:ICON.people, art:'group', title:'La catena che «devi» girare',
+      desc:'«Inoltralo a 10 persone o porta sfortuna». Sciocchezze... vero?',
+      setting:`Ti arriva una catena: «Inoltra questo messaggio a 10 contatti entro un'ora, altrimenti ti succederà qualcosa di brutto. Non rischiare!». Sai che è una sciocchezza, ma quel «non rischiare» ti lascia un piccolo dubbio.`,
+      choices:[
+        {text:'La inoltro «per sicurezza», non si sa mai', good:false, outcome:`Le catene vivono proprio di questo «non si sa mai»: ogni inoltro intasa le chat, fa ansia agli altri e a volte nasconde link o truffe. Non porta nessuna fortuna, solo fastidio.`},
+        {text:'Non la inoltro e, se serve, spiego a chi me l\'ha mandata che è una bufala', good:true, outcome:`Hai fermato la catena e magari aiutato un amico a non cascarci più. Il «coraggio» qui è semplicemente non farsi guidare dalla paura.`}
+      ],
+      dual:{ know:'Cosa sai che andrebbe fatto con una catena del genere?',
+             real:`E con quel piccolo «non si sa mai» che ti resta dentro, cosa faresti davvero?` },
+      insight:`Le catene sfruttano la paura e il senso di colpa. Riconoscere lo schema («fai questo o ti succede qualcosa») ti rende immune: nessun messaggio inoltrato ha mai cambiato la fortuna di qualcuno.` },
+
+    { id:'m3s8', type:'hotspot', icon:ICON.flag, art:'chat', title:'Dove si segnala?',
+      desc:'Un commento d\'odio sotto un post. Trova lo strumento giusto.',
+      intro:`Vuoi segnalare un contenuto offensivo alla piattaforma. Su quasi tutti i social l'azione si nasconde nello stesso posto.`,
+      prompt:'Tocca dove cercheresti l\'opzione «Segnala».',
+      scene:`<svg viewBox="0 0 100 64" preserveAspectRatio="xMidYMid meet"><rect width="100" height="64" rx="6" fill="#e9eef6"/><rect x="10" y="10" width="80" height="44" rx="5" fill="#fff" stroke="#c3cede"/><circle cx="20" cy="20" r="5" fill="#b9c6da"/><rect x="28" y="17" width="30" height="4" rx="2" fill="#cdd7e6"/><text x="84" y="22" font-size="9" text-anchor="middle" fill="#5b6b82">⋯</text><rect x="16" y="30" width="68" height="5" rx="2" fill="#dbe3ef"/><rect x="16" y="40" width="50" height="5" rx="2" fill="#dbe3ef"/></svg>`,
+      spots:[
+        {x:78,y:13,w:14,h:14, correct:true, feedback:'Esatto! Il menù «⋯» (i tre puntini) accanto al post contiene quasi sempre «Segnala» e «Blocca».', label:'⋯'},
+        {x:14,y:15,w:12,h:12, correct:false, feedback:'Questa è la foto profilo di chi ha pubblicato: ti porta al suo profilo, non alla segnalazione.', label:'profilo'},
+        {x:16,y:29,w:68,h:7, correct:false, feedback:'Questo è il testo del post: per segnalarlo cerca il menù con i tre puntini.', label:'testo'}
+      ],
+      insight:`Segnalare non è «fare la spia»: è usare gli strumenti che le piattaforme mettono a disposizione per tenere pulito lo spazio comune. Più persone segnalano, più in fretta i contenuti d'odio vengono rimossi.` }
   ],
   parent:[
-    { id:'m3p1', type:'reflect', icon:ICON.chat, title:'Riflessione: parlare di ciò che si vede online',
-      desc:'Il dialogo è la migliore protezione. Rifletti su come aprirlo.',
-      prompts:[
-        'Quando è stata l\'ultima volta che ho chiesto a mio/a figlio/a cosa guarda o segue online, con curiosità e senza giudizio?',
-        'Come reagisco se mi racconta di aver visto contenuti violenti, d\'odio o falsi? La mia reazione lo/la incoraggia a confidarsi ancora?',
-        'Che cosa posso dire o fare per essere il suo "porto sicuro" quando qualcosa online lo/la mette a disagio?'
-      ]},
-    { id:'m3p2', type:'checklist', icon:ICON.list, title:'Educare allo spirito critico',
-      desc:'Quali di queste abitudini coltivate già in famiglia?',
+    { id:'m3p1', type:'scenario', icon:ICON.chat, art:'family', title:'«Guarda, è tutto vero!»',
+      desc:'Tuo/a figlio/a ti mostra una bufala. E ci crede davvero.',
+      setting:`Tuo/a figlio/a ti mostra con entusiasmo una «notizia» palesemente falsa e complottista, e ci crede sul serio. Ti viene istintivo liquidarla con un «ma sono tutte sciocchezze, lascia perdere».`,
+      choices:[
+        {text:'«Sono sciocchezze, lascia stare»', good:false, outcome:`Chiudere il discorso non insegna a riconoscere il falso: insegna solo a non parlartene più. E intanto l'algoritmo continuerà a proporgli quei contenuti.`},
+        {text:'Gli chiedo: «interessante, da dove arriva? Proviamo a verificarla insieme»', good:true, outcome:`Trasformi un momento di disaccordo in una lezione di pensiero critico. Gli stai dando uno strumento per la vita, non una risposta da accettare.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe l\'approccio educativo giusto?',
+             real:`E nella vita reale, magari di corsa e un po' spazientito/a, cosa faresti davvero?` },
+      insight:`Non si educa al pensiero critico dando le risposte giuste, ma insegnando a farsi le domande giuste: «da dove arriva? chi lo dice? come lo verifico?».` },
+
+    { id:'m3p2', type:'categorize', icon:ICON.search, art:'news', title:'Esempio o trappola?',
+      desc:'Smista i tuoi comportamenti: quali educano allo spirito critico?',
+      intro:`I figli ci osservano anche quando usiamo noi il telefono. Che esempio diamo?`,
+      bins:['Buon esempio','Da rivedere'],
+      items:[
+        {t:'Prima di girare una notizia in famiglia, la verifico', bin:0},
+        {t:'Condivido tutto ciò che mi indigna, di getto', bin:1},
+        {t:'Mostro ai figli come si controlla una fonte', bin:0},
+        {t:'Dico «l\'ho letto su internet, quindi è vero»', bin:1}
+      ],
+      insight:`Il modo in cui noi adulti trattiamo le notizie è la prima lezione di spirito critico che i figli ricevono — molto prima di qualsiasi spiegazione.` },
+
+    { id:'m3p3', type:'checklist', icon:ICON.list, art:'family', title:'Spirito critico in famiglia',
+      desc:'Quali di queste abitudini volete coltivare insieme?',
       items:[
         'Prima di condividere una notizia in famiglia, ci chiediamo se è vera.',
-        'Mostro a mio/a figlio/a come si verifica una fonte o un\'immagine.',
+        'Mostro a mio/a figlio/a, con esempi, come si verifica una fonte o un\'immagine.',
         'Parliamo del fatto che dietro ogni profilo c\'è una persona reale.',
-        'Discutiamo di stereotipi e linguaggio rispettoso, anche con esempi concreti.'
-      ]}
+        'Discutiamo di stereotipi e linguaggio rispettoso partendo da casi concreti.'
+      ],
+      insight:`Coltivare lo spirito critico è come innaffiare una pianta: pochi gesti costanti valgono più di una grande predica una volta l'anno.` }
   ]
 });
 
-/* ============ MODULO 4 — PRIVACY E A CHI CHIEDERE AIUTO ============ */
+/* ============================================================
+   MODULO 4 — PRIVACY E AIUTO  (8 attività studente)
+============================================================ */
 MODULES.push({
   id:'m4', num:4, color:'#f5a623', icon:ICON.book,
-  title:'Privacy e aiuto', subtitle:'Proteggere i dati e sapere a chi rivolgersi',
+  title:'Privacy e aiuto', subtitle:'Quando qualcosa va storto: cosa fare e a chi rivolgersi',
   lesson:`
-    <h3>${ICON.book} Privacy, dati e rete di supporto</h3>
-    <p>Proteggere i dati personali è un diritto e una responsabilità. La <b>privacy by design</b> significa pensare alla protezione dei dati <i>fin dall'inizio</i> di ogni attività digitale: raccogliere solo il necessario, conservare in modo sicuro, condividere con consapevolezza.</p>
-    <h4>A chi chiedere aiuto (per studenti)</h4>
-    <ul>
-      <li><b>Messaggi/link sospetti (phishing)</b> → docente o referente informatico; se grave, Polizia Postale.</li>
-      <li><b>Cyberbullismo</b> → docente referente bullismo, Dirigente; genitori, Polizia Postale.</li>
-      <li><b>Foto/video condivisi senza permesso</b> → docente di fiducia, Dirigente; Garante Privacy, Polizia Postale.</li>
-      <li><b>Account rubato / furto identità</b> → docente informatico; Polizia Postale e gestore del servizio.</li>
-    </ul>
-    <div class="callout">Numeri utili: <b>114 Emergenza Infanzia</b> · <b>1.96.96 Telefono Azzurro</b> · <b>commissariatodips.it</b> (Polizia Postale).</div>
+    <h3>${ICON.book} Sbagliare o subire non è la fine: sapere a chi chiedere lo è tutto</h3>
+    <p>Proteggere i propri dati è un diritto. Ma anche facendo tutto bene, qualcosa può andare storto: una foto che gira, un account rubato, un'offesa. In quei momenti la cosa peggiore è <b>restare soli</b>.</p>
+    <p>Chiedere aiuto non è «fare la spia» né una sconfitta: è la mossa più intelligente e coraggiosa che esista.</p>
+    <div class="callout">A chi rivolgerti: <b>un adulto di fiducia</b> (genitore, docente, referente) · <b>Polizia Postale</b> (commissariatodips.it) · <b>Garante Privacy</b>. Numeri utili: <b>114</b> Emergenza Infanzia · <b>19696</b> Telefono Azzurro.</div>
   `,
   student:[
-    { id:'m4s1', type:'match', icon:ICON.help, title:'A chi chiedo aiuto?',
-      desc:'Abbina ogni situazione alla persona/ente giusto a cui rivolgerti.',
+    { id:'m4s1', type:'scenario', icon:ICON.help, art:'photo', title:'La foto che non doveva girare',
+      desc:'Una foto privata è finita in un altro gruppo. La stanno vedendo tutti.',
+      setting:`Scopri che una tua foto, che avevi mandato a una sola persona, è finita in un altro gruppo e la stanno vedendo in tanti. Senti vergogna, rabbia e vorresti solo sparire.`,
+      choices:[
+        {text:'Rispondo con insulti a chi l\'ha diffusa', good:false, outcome:`È umano volersi vendicare, ma reagire d'impulso peggiora tutto e rischia di mettere te dalla parte del torto. La rabbia ora è una cattiva consigliera.`},
+        {text:'Faccio screenshot come prova e ne parlo SUBITO con un adulto di fiducia', good:true, outcome:`Questa è la mossa giusta: raccogli le prove e non resti solo/a. Un adulto può attivare la scuola, le piattaforme e, se serve, la Polizia Postale.`},
+        {text:'Cancello tutti i social e non dico niente a nessuno', good:false, outcome:`Sparire non ferma la diffusione e ti lascia solo/a con il peso. Il silenzio protegge chi ha sbagliato, non te.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe la cosa giusta da fare in un caso così?',
+             real:`E davvero, travolto/a dalla vergogna e dalla voglia di sparire, cosa faresti?` },
+      insight:`Chi subisce non ha colpa: la colpa è di chi ha condiviso. La diffusione di immagini senza consenso è un illecito, e ci sono adulti e istituzioni il cui compito è proprio aiutarti. Parlarne è già metà della soluzione.` },
+
+    { id:'m4s2', type:'reorder', icon:ICON.sort, art:'photo', title:'Una foto sta girando: cosa faccio?',
+      desc:'Riordina le mosse giuste, con la testa fredda.',
+      intro:`È successo: una tua immagine sta circolando. Riordina i passi, dal primo all'ultimo.`,
+      steps:[
+        'Respiro: non è colpa mia e non sono solo/a',
+        'Faccio screenshot di tutto come prova (chi, dove, quando)',
+        'Ne parlo subito con un adulto di fiducia',
+        'Segnalo la foto alle piattaforme dove sta girando',
+        'Se serve, con l\'adulto contattiamo la Polizia Postale'
+      ],
+      insight:`Avere una sequenza chiara in testa, PRIMA che succeda, evita di farsi guidare dal panico. E ricorda il primo passo: non sei solo/a e non è colpa tua.` },
+
+    { id:'m4s3', type:'match', icon:ICON.help, art:'help', title:'A chi chiedo aiuto?',
+      desc:'Abbina ogni situazione alla persona o ente giusto a cui rivolgerti.',
       pairs:[
         {a:'Ricevo un link sospetto (phishing)', b:'Docente / referente informatico'},
         {a:'Qualcuno mi insulta online (cyberbullismo)', b:'Docente referente bullismo / Dirigente'},
-        {a:'Una mia foto è condivisa senza permesso', b:'Docente di fiducia / Garante Privacy'},
+        {a:'Una mia foto è condivisa senza permesso', b:'Adulto di fiducia / Garante Privacy'},
         {a:'Il mio account è stato rubato', b:'Gestore del servizio / Polizia Postale'}
-      ]},
-    { id:'m4s2', type:'quiz', icon:ICON.quiz, title:'Quiz: Privacy e dati personali',
-      desc:'Quanto conosci i tuoi diritti e le buone pratiche sulla privacy?',
-      questions:[
-        {q:'Cosa vuol dire "minimizzazione dei dati"?', options:['Raccogliere meno dati possibile, solo quelli necessari','Comprimere i file','Cancellare i social','Usare password corte'], correct:0, explain:'Si raccolgono solo i dati strettamente necessari all\'attività.'},
-        {q:'Prima di pubblicare la foto di un amico dovrei...', options:['Pubblicarla subito','Chiedere il suo consenso','Taggare più persone possibile','Aggiungere la posizione'], correct:1, explain:'Il consenso della persona ritratta è fondamentale per rispettarne la privacy.'},
-        {q:'Se il mio account viene rubato, una buona prima mossa è...', options:['Non fare nulla','Cambiare la password e avvisare il gestore del servizio','Crearne uno nuovo e basta','Pubblicare un avviso pubblico'], correct:1, explain:'Recuperare l\'accesso, cambiare password e segnalare al servizio limita i danni.'}
-      ]}
+      ],
+      insight:`Per ogni problema c'è qualcuno il cui mestiere è aiutarti. Sapere a chi rivolgersi PRIMA che serva è metà del coraggio.` },
+
+    { id:'m4s4', type:'hottext', icon:ICON.eye, art:'eye', title:'Troppo, in un profilo pubblico',
+      desc:'Una bio pubblica. Quali dati stai regalando a chiunque?',
+      intro:`Questa è la bio del profilo PUBBLICO di un ragazzo. Aiutalo a capire cosa è meglio togliere.`,
+      prompt:'Tocca le informazioni che NON andrebbero in un profilo pubblico.',
+      tokens:[
+        {t:'Luca,'},{t:'15'},{t:'anni'},{t:'.'},{t:'2C'},{t:'Liceo'},{t:'Volta',bad:true},{t:'.'},
+        {t:'Abito'},{t:'in'},{t:'via'},{t:'Roma'},{t:'8',bad:true},{t:','},{t:'Brescia'},{t:'.'},
+        {t:'Tel'},{t:'347-1234567',bad:true},{t:'.'},{t:'Adoro'},{t:'il'},{t:'basket'},{t:'!'}
+      ],
+      badNote:'scuola, indirizzo e numero di telefono in un profilo pubblico permettono a uno sconosciuto di sapere dove trovarti e come contattarti.',
+      insight:`Una passione (il basket) racconta chi sei senza rischi. Scuola, indirizzo e telefono, invece, in un profilo pubblico diventano una mappa per chiunque. Tienili per le persone che conosci davvero.` },
+
+    { id:'m4s5', type:'dropdown', icon:ICON.help, art:'help', title:'Chiedere aiuto non è debolezza',
+      desc:'Completa il messaggio per chiedere aiuto nel modo giusto.',
+      intro:`Stai male per qualcosa successo online e vuoi parlarne con un adulto. Come ti prepari?`,
+      parts:[
+        'Scelgo ',
+        {opts:['di tenermi tutto dentro','un adulto di cui mi fido','il primo sconosciuto online'], correct:1},
+        '. Gli racconto cosa è successo ',
+        {opts:['con le prove (screenshot)','senza dettagli','inventando una scusa'], correct:0},
+        '. Chiedere aiuto è ',
+        {opts:['una sconfitta','fare la spia','la mossa più intelligente'], correct:2},
+        '.'
+      ],
+      insight:`Le persone più forti non sono quelle che non hanno problemi, ma quelle che sanno chiedere aiuto al momento giusto. Prepararti su «a chi» e «come» rende quel passo molto più facile.` },
+
+    { id:'m4s6', type:'scenario', icon:ICON.lock, art:'lock', title:'Non entro più nel mio profilo',
+      desc:'La password non funziona e arrivano email strane. Cosa fai?',
+      setting:`Provi ad accedere al tuo social ma la password «non è corretta». Poco dopo ti arriva un'email: «Il tuo indirizzo di recupero è stato cambiato». Capisci che qualcuno è entrato nel tuo account.`,
+      choices:[
+        {text:'Aspetto, magari si risolve da solo', good:false, outcome:`Ogni minuto che passa il ladro può fare danni a tuo nome e chiudere le vie di recupero. Aspettare gioca a suo favore, non al tuo.`},
+        {text:'Uso subito «Password dimenticata», avviso un adulto e attivo la 2FA quando rientro', good:true, outcome:`Mossa rapida e ordinata: riprendi il controllo, ti fai aiutare e blindi l'account così non ricapita.`},
+        {text:'Mi creo un nuovo account e abbandono quello vecchio', good:false, outcome:`Lasciare l'account in mano al ladro significa permettergli di fingersi te con i tuoi contatti. Meglio provare a riprenderlo e segnalare.`}
+      ],
+      dual:{ know:'Cosa sai che andrebbe fatto appena scopri il furto dell\'account?',
+             real:`E nel momento, con l'agitazione di essere stato/a «derubato/a», cosa faresti davvero?` },
+      insight:`Di fronte a un furto d'account: velocità + ordine + aiuto. E dopo, sempre, l'autenticazione a due fattori: è il lucchetto che impedisce che succeda di nuovo.` },
+
+    { id:'m4s7', type:'hotspot', icon:ICON.lock, art:'phone', title:'Rendi privato il tuo profilo',
+      desc:'Tra queste impostazioni, qual è quella che ti protegge?',
+      intro:`Sei nelle impostazioni del tuo social. Una sola voce decide chi può vedere ciò che pubblichi.`,
+      prompt:'Tocca l\'impostazione che rende il profilo privato.',
+      scene:`<svg viewBox="0 0 100 64" preserveAspectRatio="xMidYMid meet"><rect width="100" height="64" rx="6" fill="#e9eef6"/><rect x="12" y="8" width="76" height="12" rx="3" fill="#fff" stroke="#c3cede"/><rect x="18" y="12" width="34" height="4" rx="2" fill="#cdd7e6"/><rect x="12" y="24" width="76" height="12" rx="3" fill="#fff" stroke="#c3cede"/><rect x="18" y="28" width="44" height="4" rx="2" fill="#cdd7e6"/><rect x="12" y="40" width="76" height="12" rx="3" fill="#fff" stroke="#c3cede"/><rect x="18" y="44" width="30" height="4" rx="2" fill="#cdd7e6"/></svg>`,
+      spots:[
+        {x:12,y:24,w:76,h:12, correct:true, feedback:'Esatto! «Account privato: chi vuole seguirti deve chiedere il permesso» è ciò che protegge i tuoi contenuti.', label:'Account privato'},
+        {x:12,y:8,w:76,h:12, correct:false, feedback:'Questa è la voce «Tema/Aspetto»: cambia i colori, non chi può vederti.', label:'Tema'},
+        {x:12,y:40,w:76,h:12, correct:false, feedback:'Questa è «Notifiche»: gestisce gli avvisi, non la privacy del profilo.', label:'Notifiche'}
+      ],
+      insight:`Impostare il profilo su «privato» è il singolo gesto che più riduce i rischi: decidi tu chi entra. È normale e consigliato, soprattutto per chi è minorenne.` },
+
+    { id:'m4s8', type:'scenario', icon:ICON.location, art:'location', title:'Le vacanze in diretta',
+      desc:'Casa vuota per una settimana. E tu lo stai dicendo a tutti?',
+      setting:`Parti per una settimana di vacanza e hai voglia di postare tutto in tempo reale: «Finalmente al mare per 7 giorni!», con tanto di foto della spiaggia e geolocalizzazione. È bellissimo condividerlo.`,
+      choices:[
+        {text:'Posto tutto in diretta, è il bello della vacanza', good:false, outcome:`Stai annunciando pubblicamente che casa tua è vuota per una settimana e dove ti trovi. È un'informazione preziosa per i malintenzionati.`},
+        {text:'Condivido le foto al ritorno, o solo con gli amici stretti', good:true, outcome:`Ottimo compromesso: ti godi la vacanza e la racconti, ma senza dire al mondo intero che la casa è vuota e dove sei.`},
+        {text:'Posto, ma senza scrivere «per 7 giorni» né la posizione', good:true, outcome:`Buona consapevolezza: hai tolto i due dettagli che ti esponevano di più, la durata e il luogo esatto.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe prudente fare con i post in vacanza?',
+             real:`E con l'entusiasmo del primo giorno di mare, cosa faresti davvero?` },
+      insight:`Condividere «in differita» è una piccola abitudine che protegge te e la tua famiglia. Il bello di un ricordo non scade: puoi raccontarlo benissimo anche al ritorno.` }
   ],
   parent:[
-    { id:'m4p1', type:'checklist', icon:ICON.list, title:'Checklist Privacy della famiglia',
-      desc:'Una versione "casa" della checklist Privacy by Design.',
+    { id:'m4p1', type:'scenario', icon:ICON.eye, art:'family', title:'Il profilo pubblico che non sapevi',
+      desc:'Scopri per caso che il profilo di tuo/a figlio/a è aperto a tutti.',
+      setting:`Per caso scopri che il profilo di tuo/a figlio/a è pubblico: foto, nome della scuola e, a volte, la posizione sono visibili a chiunque. Tu non ne sapevi nulla.`,
+      choices:[
+        {text:'Gli/le sequestro il telefono e cancello il profilo di nascosto', good:false, outcome:`Agire di forza e di nascosto rompe la fiducia e insegna a nascondersi meglio, non a proteggersi. Il problema resta, l'alleanza no.`},
+        {text:'Ne parliamo con calma, spiego i rischi concreti e impostiamo INSIEME la privacy', good:true, outcome:`Lo/la rendi protagonista della propria sicurezza. Una competenza imparata insieme resta; un divieto subìto si aggira.`}
+      ],
+      dual:{ know:'Cosa sai che sarebbe l\'approccio giusto da genitore?',
+             real:`E nel momento, con lo spavento e l'istinto di proteggere subito, cosa faresti davvero?` },
+      insight:`La sicurezza dei figli online si costruisce con loro, non contro di loro. Impostare insieme la privacy è un'occasione di dialogo: spiega il «perché» dei rischi, non solo il «no».` },
+
+    { id:'m4p2', type:'checklist', icon:ICON.list, art:'family', title:'Sappiamo a chi rivolgerci',
+      desc:'Spunta ciò che, come famiglia, sapete già fare.',
       items:[
-        'So quali dati dei miei figli circolano online (foto, scuola, sport...).',
-        'Ho impostato profili privati e limitato la geolocalizzazione.',
-        'Chiedo il consenso prima di pubblicare foto dei miei figli (e di altri bambini).',
-        'Conosco a chi rivolgermi a scuola (referente, DPO, Dirigente) in caso di problemi.',
-        'Abbiamo salvato i numeri utili: 114, 19696, Polizia Postale.'
-      ]},
-    { id:'m4p2', type:'pact', icon:ICON.pact, title:'Patto Digitale Familiare — versione completa',
-      desc:'Firmate insieme un patto che protegga tutti. Spunta gli impegni che adottate.',
+        'Sappiamo che la Polizia Postale (commissariatodips.it) aiuta su truffe e abusi online.',
+        'Conosciamo i numeri utili: 114 Emergenza Infanzia, 19696 Telefono Azzurro.',
+        'In famiglia è chiaro che, se qualcosa va storto, se ne parla senza essere giudicati.',
+        'Sappiamo che diffondere immagini senza consenso è un illecito da segnalare.'
+      ],
+      insight:`«Chi sbaglia viene aiutato, non giudicato.» La rete di protezione più importante non è un software: è sapere che a casa si può dire tutto.` },
+
+    { id:'m4p3', type:'pact', icon:ICON.pact, art:'family', title:'Patto Digitale di Famiglia — versione completa',
+      desc:'Chiudete il percorso firmando insieme un patto che protegge tutti.',
       items:[
         'Chiediamo sempre il permesso prima di pubblicare foto degli altri.',
         'Non condividiamo password, indirizzo o dati personali con sconosciuti.',
-        'Se qualcosa online ci mette a disagio, ne parliamo in famiglia senza paura.',
+        'Se qualcosa online ci mette a disagio, ne parliamo in famiglia senza paura di essere giudicati.',
         'Verifichiamo le notizie prima di condividerle.',
-        'Rispettiamo gli orari "senza schermo" decisi insieme.',
-        'Sappiamo a chi chiedere aiuto (scuola, Polizia Postale, numeri utili).'
-      ]}
+        'Rispettiamo gli orari «senza schermo» decisi insieme, adulti compresi.',
+        'Sappiamo a chi chiedere aiuto: scuola, Polizia Postale, numeri utili (114, 19696).'
+      ],
+      insight:`Avete completato il percorso: questo patto «non è un elenco di divieti, è una promessa che ci facciamo a vicenda». Stampatelo, firmatelo e tenete-lo in vista: è il vostro punto di contatto tra scuola e famiglia.` }
   ]
 });
 </script>
@@ -569,9 +1078,11 @@ function loadProgress(){ try{ PROGRESS=JSON.parse(localStorage.getItem(storeKey(
 
 /* ===================== NAVIGAZIONE ===================== */
 function showView(id){
-  ['home','login','modules','module','dashboard'].forEach(v=>{
+  ['home','login','modules','module'].forEach(v=>{
     document.getElementById('view-'+v).classList.toggle('hidden', v!==id);
   });
+  // tema genitori coerente con il Patto Digitale (verde/oro/crema)
+  document.body.classList.toggle('parent-theme', ROLE==='genitore' && id!=='home');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function renderUserArea(){
@@ -670,7 +1181,7 @@ function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600); }
 
 /* segna attività completata + salva + sincronizza */
-function markDone(id, scoreText){
+function markDone(id, scoreText, detail){
   if(!PROGRESS[id]) PROGRESS[id]={};
   const already=PROGRESS[id].done;
   PROGRESS[id].done=true;
@@ -678,8 +1189,10 @@ function markDone(id, scoreText){
   PROGRESS[id].ts=new Date().toISOString();
   saveProgress();
   const reg=ALL_ACTS[id];
+  detail=detail||{};
   syncRecord({ role:ROLE, name:USER.name, classe:USER.classe, modulo:reg.mod.num+' - '+reg.mod.title,
-    attivita:reg.act.title, punteggio:scoreText||'completata', timestamp:PROGRESS[id].ts });
+    attivita:reg.act.title, punteggio:scoreText||'completata', timestamp:PROGRESS[id].ts,
+    risposta1:detail.risposta1||'', risposta2:detail.risposta2||'', dettaglio:detail.dettaglio||'' });
   const badge=document.getElementById('badge-'+id);
   if(badge){ badge.className='status-badge ok'; badge.textContent=(scoreText?scoreText+' · ':'')+'Completata ✓'; }
   const card=document.getElementById('act-'+id);
@@ -699,7 +1212,14 @@ function syncRecord(rec){
 /* ===================== RENDER ATTIVITÀ ===================== */
 const TYPE_LABEL={quiz:'Quiz',phishing:'Simulazione',password:'Laboratorio',flashcards:'Ripasso',
   checklist:'Checklist',match:'Abbinamento',factcheck:'Laboratorio',rewrite:'Sfida creativa',
-  reflect:'Riflessione',pact:'Patto familiare'};
+  reflect:'Riflessione',pact:'Patto familiare',scenario:'Scena di vita reale',
+  hottext:'Trova gli indizi',categorize:'Smista le carte',reorder:'Rimetti in ordine',
+  dropdown:'Completa le frasi',hotspot:'Tocca il punto giusto'};
+
+function actBanner(a){
+  if(a.art && typeof ART!=='undefined' && ART[a.art]) return '<div class="art-banner">'+ART[a.art]+'</div>';
+  return '';
+}
 
 function actShell(a,isPar,body){
   const p=PROGRESS[a.id]||{};
@@ -709,6 +1229,7 @@ function actShell(a,isPar,body){
   return '<div class="act'+(isPar?' par':'')+doneCls+'" id="act-'+a.id+'">'+
     '<div class="act-head"><div class="ic" style="background:'+(isPar?'#e3faf6':'#fff1e8')+'">'+a.icon+'</div>'+
       '<div><div class="type">'+(TYPE_LABEL[a.type]||'')+'</div><h3>'+esc(a.title)+'</h3></div>'+badge+'</div>'+
+    actBanner(a)+
     '<div class="desc">'+esc(a.desc)+'</div>'+body+'</div>';
 }
 
@@ -778,8 +1299,76 @@ function renderActivity(a,isPar){
         '<input type="checkbox" id="pc-'+a.id+'-'+ii+'" style="width:20px;height:20px;flex-shrink:0" /> '+esc(it)+'</label>').join('')+
       '<div class="act-actions"><button class="btn-act" onclick="saveChecklist(\''+a.id+'\','+a.items.length+')">✍ Firmiamo il patto</button></div>');
 
+    case 'scenario': return actShell(a,isPar,
+      '<div class="scene">'+esc(a.setting)+'</div>'+
+      '<div class="scene-q">E tu, in quel momento, cosa fai?</div>'+
+      a.choices.map((c,ci)=>'<button class="choice" id="sc-'+a.id+'-'+ci+'" onclick="scenarioChoice(\''+a.id+'\','+ci+')">'+esc(c.text)+'</button>'+
+        '<div class="explain outcome" id="sco-'+a.id+'-'+ci+'">'+esc(c.outcome)+'</div>').join('')+
+      '<div class="insight" id="sins-'+a.id+'"><b>Da portare con te</b><br>'+esc(a.insight)+'</div>'+
+      '<div class="dual">'+
+        '<div class="dbox know"><div class="dl"><span class="dn">1</span> Cosa <u>so</u> e cosa è giusto fare</div>'+
+          '<p class="dq">'+esc(a.dual.know)+'</p>'+
+          '<textarea id="sk-'+a.id+'" placeholder="Scrivi cosa sai che sarebbe la cosa giusta..."></textarea></div>'+
+        '<div class="dbox real"><div class="dl"><span class="dn">2</span> Cosa <u>farei</u> davvero</div>'+
+          '<p class="dq">'+esc(a.dual.real)+'</p>'+
+          '<textarea id="sr-'+a.id+'" placeholder="Sii sincero/a: non deve coincidere con la risposta teorica..."></textarea></div>'+
+      '</div>'+
+      '<div class="act-actions"><button class="btn-act" onclick="saveScenario(\''+a.id+'\')">Salva la mia scelta e le risposte</button></div>');
+
+    case 'hottext': return actShell(a,isPar,
+      (a.intro?'<div class="callout tip">'+esc(a.intro)+'</div>':'')+
+      '<div class="mini-prompt">'+esc(a.prompt)+'</div>'+
+      '<div class="hottext" id="ht-'+a.id+'">'+
+        a.tokens.map((tk,i)=>'<span class="htok" id="htok-'+a.id+'-'+i+'" onclick="htToggle(\''+a.id+'\','+i+')">'+esc(tk.t)+'</span>').join(' ')+
+      '</div>'+
+      '<div class="act-actions"><button class="btn-act" onclick="htCheck(\''+a.id+'\')">Verifica</button></div>'+
+      '<div class="explain" id="htres-'+a.id+'"></div>'+
+      insightBlock(a));
+
+    case 'categorize': return actShell(a,isPar,
+      (a.intro?'<div class="callout tip">'+esc(a.intro)+'</div>':'')+
+      '<div class="cat-legend">'+a.bins.map((b,bi)=>'<span class="cat-pill p'+bi+'">'+esc(b)+'</span>').join('')+'</div>'+
+      a.items.map((it,i)=>'<div class="cat-row" id="catrow-'+a.id+'-'+i+'"><span class="cat-txt">'+esc(it.t)+'</span>'+
+        '<span class="cat-btns">'+a.bins.map((b,bi)=>'<button class="cat-b p'+bi+'" id="catb-'+a.id+'-'+i+'-'+bi+'" onclick="catPick(\''+a.id+'\','+i+','+bi+')">'+esc(b)+'</button>').join('')+'</span></div>').join('')+
+      '<div class="act-actions"><button class="btn-act" onclick="catCheck(\''+a.id+'\')">Verifica</button></div>'+
+      '<div class="explain" id="catres-'+a.id+'"></div>'+
+      insightBlock(a));
+
+    case 'reorder': return actShell(a,isPar,
+      (a.intro?'<div class="callout tip">'+esc(a.intro)+'</div>':'')+
+      '<div class="reorder" id="ro-'+a.id+'"></div>'+
+      '<div class="act-actions"><button class="btn-act" onclick="roCheck(\''+a.id+'\')">Verifica l\'ordine</button></div>'+
+      '<div class="explain" id="rores-'+a.id+'"></div>'+
+      insightBlock(a));
+
+    case 'dropdown': { let di=-1; return actShell(a,isPar,
+      (a.intro?'<div class="callout tip">'+esc(a.intro)+'</div>':'')+
+      '<div class="dropfill">'+a.parts.map(p=>{
+        if(typeof p==='string') return esc(p);
+        di++; const gi=di;
+        return '<select class="ddsel" id="dd-'+a.id+'-'+gi+'"><option value="-1">— scegli —</option>'+
+          p.opts.map((o,oi)=>'<option value="'+oi+'">'+esc(o)+'</option>').join('')+'</select>';
+      }).join('')+'</div>'+
+      '<div class="act-actions"><button class="btn-act" onclick="ddCheck(\''+a.id+'\')">Verifica</button></div>'+
+      '<div class="explain" id="ddres-'+a.id+'"></div>'+
+      insightBlock(a)); }
+
+    case 'hotspot': return actShell(a,isPar,
+      (a.intro?'<div class="callout tip">'+esc(a.intro)+'</div>':'')+
+      '<div class="mini-prompt">'+esc(a.prompt)+'</div>'+
+      '<div class="hotspot" id="hs-'+a.id+'">'+a.scene+
+        a.spots.map((s,i)=>'<button class="hspot" style="left:'+s.x+'%;top:'+s.y+'%;width:'+s.w+'%;height:'+s.h+'%" '+
+          'id="hspot-'+a.id+'-'+i+'" onclick="hsClick(\''+a.id+'\','+i+')"><span class="hslabel">'+esc(s.label||'')+'</span></button>').join('')+
+      '</div>'+
+      '<div class="explain" id="hsres-'+a.id+'"></div>'+
+      insightBlock(a));
+
     default: return actShell(a,isPar,'');
   }
+}
+
+function insightBlock(a){
+  return '<div class="insight" id="ins-'+a.id+'"><b>Da portare con te</b><br>'+esc(a.insight)+'</div>';
 }
 
 function renderMatch(a,isPar){
@@ -794,13 +1383,201 @@ function renderMatch(a,isPar){
 
 /* ---- restore testi salvati ---- */
 function initActivity(a){
-  const p=PROGRESS[a.id]; if(!p||!p.data) return;
+  const p=PROGRESS[a.id]||{};
+  // reorder: serve sempre la sequenza (anche se non completata)
+  if(a.type==='reorder'){
+    RT[a.id]=RT[a.id]||{};
+    if(!RT[a.id].order){
+      RT[a.id].order=(p.data&&p.data.order)?p.data.order.slice():roShuffle((a.steps||[]).length);
+    }
+    roRender(a.id);
+    if(p.done){ const res=document.getElementById('rores-'+a.id); if(res){ res.classList.add('show'); res.innerHTML='<b style="color:var(--good)">✔ Ordine corretto! Bravo/a.</b>'; }
+      const ins=document.getElementById('ins-'+a.id); if(ins) ins.classList.add('show'); }
+  }
+  // completate: mostra l'insight per i tipi a verifica
+  if(p.done && ['hottext','categorize','dropdown','hotspot'].indexOf(a.type)>=0){
+    const ins=document.getElementById('ins-'+a.id); if(ins) ins.classList.add('show');
+  }
+  if(!p||!p.data) return;
   if(a.type==='reflect') (a.prompts||[]).forEach((q,i)=>{ const el=document.getElementById('rf-'+a.id+'-'+i); if(el&&p.data[i]!=null) el.value=p.data[i]; });
   if(a.type==='rewrite') (a.items||[]).forEach((q,i)=>{ const el=document.getElementById('rw-'+a.id+'-'+i); if(el&&p.data[i]!=null) el.value=p.data[i]; });
   if(a.type==='checklist'||a.type==='pact') (a.items||[]).forEach((q,i)=>{ const el=document.getElementById((a.type==='pact'?'pc-':'cl-')+a.id+'-'+i); if(el&&p.data[i]) el.checked=true; });
+  if(a.type==='scenario'){
+    const k=document.getElementById('sk-'+a.id); if(k&&p.data.know!=null) k.value=p.data.know;
+    const r=document.getElementById('sr-'+a.id); if(r&&p.data.real!=null) r.value=p.data.real;
+    if(p.data.choice!=null){ RT[a.id]=RT[a.id]||{}; RT[a.id].choice=p.data.choice; revealScenario(a.id,p.data.choice); }
+  }
 }
 
 /* ===================== HANDLER ATTIVITÀ ===================== */
+function revealScenario(id,ci){
+  const a=ALL_ACTS[id].act;
+  a.choices.forEach((c,k)=>{
+    const b=document.getElementById('sc-'+id+'-'+k); if(!b) return;
+    b.style.pointerEvents='none'; b.classList.remove('good','bad','picked','dim');
+    if(c.good) b.classList.add('good'); else b.classList.add('dim');
+    if(k===ci){ b.classList.add('picked'); if(!c.good){ b.classList.remove('dim'); b.classList.add('bad'); } }
+  });
+  const o=document.getElementById('sco-'+id+'-'+ci); if(o) o.classList.add('show');
+  const ins=document.getElementById('sins-'+id); if(ins) ins.classList.add('show');
+}
+function scenarioChoice(id,ci){
+  RT[id]=RT[id]||{}; RT[id].choice=ci;
+  revealScenario(id,ci);
+}
+function saveScenario(id){
+  if(!RT[id]||RT[id].choice==null){ toast('Prima scegli cosa faresti nella scena 👆'); return; }
+  const k=(document.getElementById('sk-'+id)||{}).value||'';
+  const r=(document.getElementById('sr-'+id)||{}).value||'';
+  if(!k.trim()||!r.trim()){ toast('Completa entrambe le risposte: cosa SAI e cosa FARESTI davvero'); return; }
+  const a=ALL_ACTS[id].act; const good=!!a.choices[RT[id].choice].good;
+  if(!PROGRESS[id]) PROGRESS[id]={};
+  PROGRESS[id].data={choice:RT[id].choice, know:k.trim(), real:r.trim()};
+  markDone(id, good?'scelta efficace':'scena affrontata', {risposta1:k.trim(), risposta2:r.trim(), dettaglio:a.choices[RT[id].choice].text});
+}
+
+/* ---- HOTTEXT: trova le informazioni sensibili ---- */
+function htToggle(id,i){
+  if(PROGRESS[id]&&PROGRESS[id].done) return;
+  RT[id]=RT[id]||{sel:{}};
+  RT[id].sel=RT[id].sel||{};
+  RT[id].sel[i]=!RT[id].sel[i];
+  const el=document.getElementById('htok-'+id+'-'+i);
+  if(el) el.classList.toggle('on', !!RT[id].sel[i]);
+}
+function htCheck(id){
+  const a=ALL_ACTS[id].act; const sel=(RT[id]&&RT[id].sel)||{};
+  let tp=0, fp=0, fn=0, totBad=0;
+  a.tokens.forEach((tk,i)=>{
+    const chosen=!!sel[i]; const bad=!!tk.bad; if(bad) totBad++;
+    const el=document.getElementById('htok-'+id+'-'+i);
+    if(el){ el.classList.remove('on'); el.style.pointerEvents='none';
+      if(bad){ el.classList.add('reveal-bad'); if(chosen){ el.classList.add('hit'); tp++; } else fn++; }
+      else if(chosen){ el.classList.add('miss'); fp++; }
+    }
+  });
+  const res=document.getElementById('htres-'+id); res.classList.add('show');
+  const perfect=(tp===totBad && fp===0);
+  res.innerHTML='<b style="color:'+(perfect?'var(--good)':'var(--orange)')+'">'+
+    (perfect?'✔ Perfetto! Hai trovato tutte le informazioni a rischio.':'Hai trovato '+tp+' su '+totBad+' informazioni sensibili'+(fp?' (e ne hai segnate '+fp+' di troppo)':'')+'.')+'</b>'+
+    (a.badNote?'<br><span class="muted">In rosso: '+esc(a.badNote)+'</span>':'');
+  document.getElementById('ins-'+id).classList.add('show');
+  markDone(id, perfect?'tutte trovate':tp+'/'+totBad, {risposta1:'individuate '+tp+'/'+totBad+' info sensibili'});
+}
+
+/* ---- CATEGORIZE: smista nelle categorie ---- */
+function catPick(id,i,bin){
+  if(PROGRESS[id]&&PROGRESS[id].done) return;
+  RT[id]=RT[id]||{assign:{}};
+  RT[id].assign=RT[id].assign||{};
+  RT[id].assign[i]=bin;
+  const a=ALL_ACTS[id].act;
+  a.bins.forEach((b,bi)=>{ const btn=document.getElementById('catb-'+id+'-'+i+'-'+bi); if(btn) btn.classList.toggle('sel', bi===bin); });
+}
+function catCheck(id){
+  const a=ALL_ACTS[id].act; const as=(RT[id]&&RT[id].assign)||{};
+  if(Object.keys(as).length<a.items.length){ toast('Smista tutte le carte prima di verificare 👆'); return; }
+  let ok=0;
+  a.items.forEach((it,i)=>{
+    const row=document.getElementById('catrow-'+id+'-'+i);
+    const correct=(as[i]===it.bin);
+    if(correct) ok++;
+    if(row){ row.classList.add(correct?'cat-ok':'cat-no');
+      a.bins.forEach((b,bi)=>{ const btn=document.getElementById('catb-'+id+'-'+i+'-'+bi); if(btn) btn.style.pointerEvents='none'; });
+      if(!correct){ const right=document.getElementById('catb-'+id+'-'+i+'-'+it.bin); if(right) right.classList.add('correct'); }
+    }
+  });
+  const res=document.getElementById('catres-'+id); res.classList.add('show');
+  const perfect=(ok===a.items.length);
+  res.innerHTML='<b style="color:'+(perfect?'var(--good)':'var(--orange)')+'">'+
+    (perfect?'✔ Tutte smistate correttamente!':'Hai indovinato '+ok+' su '+a.items.length+'. In verde la categoria giusta.')+'</b>';
+  document.getElementById('ins-'+id).classList.add('show');
+  markDone(id, ok+'/'+a.items.length, {risposta1:'smistate correttamente '+ok+'/'+a.items.length});
+}
+
+/* ---- REORDER: rimetti i passi in ordine ---- */
+function roShuffle(n){
+  const arr=Array.from({length:n},(_,i)=>i);
+  if(n<2) return arr;
+  let tries=0;
+  do{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } tries++; }
+  while(arr.every((v,i)=>v===i) && tries<20);
+  return arr;
+}
+function roRender(id){
+  const a=ALL_ACTS[id].act; const box=document.getElementById('ro-'+id); if(!box) return;
+  const order=RT[id].order; const locked=PROGRESS[id]&&PROGRESS[id].done;
+  box.innerHTML=order.map((orig,pos)=>
+    '<div class="ro-item" id="roit-'+id+'-'+pos+'"><span class="ro-num">'+(pos+1)+'</span>'+
+    '<span class="ro-txt">'+esc(a.steps[orig])+'</span>'+
+    (locked?'':'<span class="ro-ctrl">'+
+      '<button class="ro-arr" onclick="roMove(\''+id+'\','+pos+',-1)" '+(pos===0?'disabled':'')+'>▲</button>'+
+      '<button class="ro-arr" onclick="roMove(\''+id+'\','+pos+',1)" '+(pos===order.length-1?'disabled':'')+'>▼</button>'+
+    '</span>')+'</div>').join('');
+}
+function roMove(id,pos,dir){
+  const order=RT[id].order; const ni=pos+dir;
+  if(ni<0||ni>=order.length) return;
+  [order[pos],order[ni]]=[order[ni],order[pos]];
+  roRender(id);
+}
+function roCheck(id){
+  const a=ALL_ACTS[id].act; const order=RT[id].order;
+  let ok=0; order.forEach((orig,pos)=>{ if(orig===pos) ok++; });
+  const perfect=(ok===order.length);
+  order.forEach((orig,pos)=>{ const it=document.getElementById('roit-'+id+'-'+pos); if(it) it.classList.add(orig===pos?'ro-ok':'ro-no'); });
+  const res=document.getElementById('rores-'+id); res.classList.add('show');
+  if(perfect){
+    res.innerHTML='<b style="color:var(--good)">✔ Ordine corretto! Bravo/a.</b>';
+    document.getElementById('ins-'+id).classList.add('show');
+    PROGRESS[id]=PROGRESS[id]||{}; PROGRESS[id].data={order:order.slice()};
+    markDone(id,'ordine corretto',{risposta1:'sequenza ricostruita correttamente'});
+    roRender(id);
+  } else {
+    res.innerHTML='<b style="color:var(--orange)">Quasi! '+ok+' passi sono al posto giusto. Sistema gli altri e riprova.</b>';
+    setTimeout(()=>{ order.forEach((orig,pos)=>{ const it=document.getElementById('roit-'+id+'-'+pos); if(it) it.classList.remove('ro-ok','ro-no'); }); },1400);
+  }
+}
+
+/* ---- DROPDOWN: completa le frasi ---- */
+function ddGaps(a){ return a.parts.filter(p=>typeof p!=='string'); }
+function ddCheck(id){
+  const a=ALL_ACTS[id].act; const gaps=ddGaps(a);
+  let ok=0, filled=0;
+  gaps.forEach((g,gi)=>{ const sel=document.getElementById('dd-'+id+'-'+gi); if(!sel) return;
+    const v=parseInt(sel.value,10); if(v>=0) filled++; });
+  if(filled<gaps.length){ toast('Completa tutte le frasi prima di verificare 👆'); return; }
+  gaps.forEach((g,gi)=>{ const sel=document.getElementById('dd-'+id+'-'+gi); const v=parseInt(sel.value,10);
+    sel.disabled=true; const correct=(v===g.correct); if(correct) ok++;
+    sel.classList.add(correct?'dd-ok':'dd-no');
+    if(!correct){ sel.value=String(g.correct); }
+  });
+  const res=document.getElementById('ddres-'+id); res.classList.add('show');
+  const perfect=(ok===gaps.length);
+  res.innerHTML='<b style="color:'+(perfect?'var(--good)':'var(--orange)')+'">'+
+    (perfect?'✔ Tutte giuste! Hai costruito le abitudini migliori.':'Hai scelto bene in '+ok+' frasi su '+gaps.length+'. Le risposte giuste sono ora evidenziate.')+'</b>';
+  document.getElementById('ins-'+id).classList.add('show');
+  markDone(id, ok+'/'+gaps.length, {risposta1:'scelte corrette '+ok+'/'+gaps.length});
+}
+
+/* ---- HOTSPOT: tocca il punto giusto ---- */
+function hsClick(id,i){
+  if(PROGRESS[id]&&PROGRESS[id].done) return;
+  const a=ALL_ACTS[id].act; const s=a.spots[i];
+  const btn=document.getElementById('hspot-'+id+'-'+i);
+  const res=document.getElementById('hsres-'+id); res.classList.add('show');
+  if(s.correct){
+    a.spots.forEach((_,k)=>{ const b=document.getElementById('hspot-'+id+'-'+k); if(b) b.style.pointerEvents='none'; });
+    if(btn) btn.classList.add('hs-ok');
+    res.innerHTML='<b style="color:var(--good)">✔ '+esc(s.feedback)+'</b>';
+    document.getElementById('ins-'+id).classList.add('show');
+    markDone(id,'trovato',{risposta1:'individuato il punto giusto: '+(s.label||'')});
+  } else {
+    if(btn){ btn.classList.add('hs-no'); setTimeout(()=>btn.classList.remove('hs-no'),900); }
+    res.innerHTML='<b style="color:var(--orange)">'+esc(s.feedback)+'</b>';
+  }
+}
+
 function quizAnswer(id,qi,oi){
   RT[id]=RT[id]||{answers:{}};
   if(RT[id].answers[qi]!=null) return;
@@ -899,58 +1676,9 @@ function fcVerdict(id,guess){
   markDone(id, ok?'corretto':'da rivedere');
 }
 
-/* ===================== DASHBOARD DOCENTE ===================== */
-function openDashboard(){
-  const pin=prompt('Inserisci il PIN docente per accedere alla dashboard:');
-  if(pin===null) return;
-  if(pin!==CONFIG.DASHBOARD_PIN){ toast('PIN errato'); return; }
-  renderDashboard(); showView('dashboard'); loadDashboardData();
-}
-let DASH_FILTER='tutti', DASH_ROWS=null;
-function renderDashboard(rows){
-  let h='<div class="crumb" onclick="showView(\'home\')">&larr; Home</div>'+
-    '<div class="mod-head"><h2>📊 Dashboard Docente</h2><p>Monitoraggio dei progressi di studenti e genitori</p></div>';
-  if(!CONFIG.SHEET_ENDPOINT){
-    h+='<div class="lesson"><h3>'+ICON.book+' Collega il Google Sheet</h3>'+
-      '<p>Per vedere i progressi di tutti, configura l\'integrazione con Google Sheet seguendo il file <b>ISTRUZIONI.md</b> e incolla l\'URL nella variabile <code>CONFIG.SHEET_ENDPOINT</code> in cima allo script.</p>'+
-      '<div class="callout">Senza configurazione, i progressi restano salvati solo sul dispositivo di ciascun utente.</div></div>';
-    document.getElementById('view-dashboard').innerHTML=h; return;
-  }
-  h+='<div id="dashBody"><p style="text-align:center;color:var(--muted)">Caricamento dati… ☁</p></div>';
-  document.getElementById('view-dashboard').innerHTML=h;
-  if(rows) fillDashboard(rows);
-}
-function loadDashboardData(){
-  if(!CONFIG.SHEET_ENDPOINT) return;
-  fetch(CONFIG.SHEET_ENDPOINT+'?action=read')
-    .then(r=>r.json()).then(d=>{ DASH_ROWS=d.rows||d||[]; fillDashboard(DASH_ROWS); })
-    .catch(e=>{ document.getElementById('dashBody').innerHTML='<div class="callout dang">Impossibile leggere i dati. Verifica l\'URL e che la Web App sia pubblicata per "Chiunque".</div>'; });
-}
-function fillDashboard(rows){
-  const body=document.getElementById('dashBody'); if(!body) return;
-  const f=DASH_FILTER;
-  const filtered=rows.filter(r=>f==='tutti'|| (r.role||r.Ruolo||'').toLowerCase().indexOf(f)>=0);
-  const norm=r=>({name:r.name||r.Nome||'', classe:r.classe||r.Classe||'', role:r.role||r.Ruolo||'',
-    modulo:r.modulo||r.Modulo||'', att:r.attivita||r.Attività||r.Attivita||'', punt:r.punteggio||r.Punteggio||'', ts:r.timestamp||r.Data||''});
-  const list=filtered.map(norm);
-  const students=new Set(list.filter(r=>r.role.toLowerCase().indexOf('stud')>=0).map(r=>r.name+'|'+r.classe));
-  const parents=new Set(list.filter(r=>r.role.toLowerCase().indexOf('genit')>=0).map(r=>r.name+'|'+r.classe));
-  let h='<div class="seg">'+
-    ['tutti','studente','genitore'].map(x=>'<button class="'+(f===x?'on':'')+'" onclick="setDashFilter(\''+x+'\')">'+(x==='tutti'?'Tutti':x==='studente'?'Studenti':'Genitori')+'</button>').join('')+
-    '</div> <button class="btn-ghost" onclick="loadDashboardData()">↻ Aggiorna</button>';
-  h+='<div class="dash-stats">'+
-    '<div class="stat"><div class="v">'+students.size+'</div><div class="l">Studenti attivi</div></div>'+
-    '<div class="stat"><div class="v">'+parents.size+'</div><div class="l">Genitori attivi</div></div>'+
-    '<div class="stat"><div class="v">'+list.length+'</div><div class="l">Attività completate</div></div>'+
-    '<div class="stat"><div class="v">'+(students.size+parents.size)+'</div><div class="l">Utenti totali</div></div></div>';
-  if(!list.length){ h+='<div class="callout">Ancora nessun dato registrato per questo filtro.</div>'; body.innerHTML=h; return; }
-  h+='<table><thead><tr><th>Nome</th><th>Classe</th><th>Ruolo</th><th>Modulo</th><th>Attività</th><th>Esito</th><th>Quando</th></tr></thead><tbody>'+
-    list.slice().reverse().map(r=>'<tr><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.classe)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.modulo)+'</td><td>'+esc(r.att)+'</td><td>'+esc(r.punt)+'</td><td>'+esc(fmtDate(r.ts))+'</td></tr>').join('')+
-    '</tbody></table>';
-  body.innerHTML=h;
-}
-function setDashFilter(f){ DASH_FILTER=f; if(DASH_ROWS) fillDashboard(DASH_ROWS); }
-function fmtDate(s){ if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleDateString('it-IT')+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+/* La Dashboard Docente è una pagina separata e protetta da password:
+   dashboard-docente.html (cifratura AES-GCM dell'endpoint del Foglio Google).
+   L'app studenti/genitori può solo SCRIVERE i progressi, non leggerli. */
 </script>
 </body>
 </html>
