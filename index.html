@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cittadini Digitali · Percorso per studenti e famiglie</title>
+<style>
+  :root{
+    --indigo:#5b2be0; --indigo-d:#3d1a9e; --teal:#10b6a8; --orange:#ff7a3d;
+    --olive:#6b6a4b; --mint:#9be8df; --sand:#e7d9b5;
+    --ink:#1c1633; --muted:#6b6680; --bg:#f5f3fb; --card:#ffffff;
+    --good:#16a34a; --bad:#e23d52; --warn:#f5a623;
+    --shadow:0 10px 30px rgba(45,26,120,.12);
+    --radius:20px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--bg);
+    background-image:radial-gradient(900px 500px at 10% -5%,rgba(91,43,224,.10),transparent),
+                     radial-gradient(700px 500px at 100% 0%,rgba(16,182,168,.10),transparent);
+    min-height:100vh; line-height:1.55;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:18px}
+  .hidden{display:none !important}
+  button{font-family:inherit;cursor:pointer;border:none}
+  h1,h2,h3{line-height:1.2;margin:0 0 .4em}
+  a{color:var(--indigo)}
+
+  /* Top bar */
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 18px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.15rem}
+  .brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--teal));
+    display:grid;place-items:center;box-shadow:var(--shadow)}
+  .brand small{display:block;font-weight:600;font-size:.72rem;color:var(--muted);letter-spacing:.3px}
+  .spacer{flex:1}
+  .userchip{display:flex;align-items:center;gap:8px;background:#fff;padding:7px 12px;border-radius:999px;
+    box-shadow:var(--shadow);font-weight:700;font-size:.86rem}
+  .userchip .role{font-size:.7rem;color:var(--muted);font-weight:600}
+  .btn-ghost{background:#fff;color:var(--indigo);padding:8px 14px;border-radius:999px;font-weight:700;box-shadow:var(--shadow)}
+  .btn-ghost:hover{background:#f3effd}
+
+  /* Hero / role selection */
+  .hero{text-align:center;padding:30px 18px 6px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.6rem)}
+  .hero p.lead{color:var(--muted);max-width:620px;margin:0 auto 8px;font-size:1.05rem}
+  .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin:26px 0}
+  .role-card{background:var(--card);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);
+    text-align:left;transition:transform .15s,box-shadow .15s;border:2px solid transparent;position:relative;overflow:hidden}
+  .role-card:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(45,26,120,.2)}
+  .role-card .ic{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;margin-bottom:14px}
+  .role-card h3{font-size:1.35rem}
+  .role-card p{color:var(--muted);margin:.2em 0 16px;font-size:.95rem}
+  .role-card .tag{display:inline-block;font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:999px;margin:0 6px 6px 0}
+  .role-card .go{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:#fff;padding:11px 18px;border-radius:999px}
+  .rc-stud .ic{background:linear-gradient(135deg,var(--orange),#ffb347)}
+  .rc-stud .go{background:linear-gradient(135deg,var(--orange),#ff9a5a)}
+  .rc-stud .tag{background:#fff1e8;color:#c2410c}
+  .rc-par .ic{background:linear-gradient(135deg,var(--teal),var(--mint))}
+  .rc-par .go{background:linear-gradient(135deg,var(--teal),#3ccabb)}
+  .rc-par .tag{background:#e3faf6;color:#0b756b}
+  .mini-access{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+  .mini-access button{background:#fff;color:var(--indigo);padding:9px 16px;border-radius:999px;font-weight:700;
+    box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:8px}
+
+  /* Login */
+  .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;max-width:460px;margin:24px auto}
+  .panel h2{display:flex;align-items:center;gap:10px}
+  label{display:block;font-weight:700;font-size:.86rem;margin:14px 0 6px}
+  input,select,textarea{width:100%;padding:12px 14px;border:2px solid #ece8f6;border-radius:12px;font-size:1rem;font-family:inherit;background:#fbfaff}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--indigo)}
+  textarea{min-height:96px;resize:vertical}
+  .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--indigo-d));color:#fff;padding:13px 20px;
+    border-radius:12px;font-weight:800;font-size:1rem;width:100%;margin-top:18px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-primary:hover{filter:brightness(1.07)}
+  .hint{font-size:.8rem;color:var(--muted);margin-top:8px}
+
+  /* Dashboard of modules */
+  .welcome{display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,#fff,#f6f2ff);
+    border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);margin:8px 0 20px;flex-wrap:wrap}
+  .welcome .big{font-size:1.4rem;font-weight:800}
+  .progress-ring{--p:0;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;
+    background:conic-gradient(var(--teal) calc(var(--p)*1%),#e8e4f3 0);flex-shrink:0}
+  .progress-ring span{width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;font-size:1rem}
+  .modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+  .mod-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;
+    cursor:pointer;transition:transform .15s;border-top:5px solid var(--indigo);position:relative}
+  .mod-card:hover{transform:translateY(-4px)}
+  .mod-card .num{position:absolute;top:14px;right:18px;font-weight:800;font-size:2rem;opacity:.12}
+  .mod-card .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;margin-bottom:10px;background:#f1edfd}
+  .mod-card h3{font-size:1.1rem}
+  .mod-card p{color:var(--muted);font-size:.86rem;margin:.2em 0 12px}
+  .bar{height:9px;background:#ece8f6;border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--mint));width:0;transition:width .5s}
+  .mod-card .meta{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);margin-top:6px;font-weight:700}
+
+  /* Module detail */
+  .crumb{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:700;font-size:.88rem;margin:6px 0 14px;cursor:pointer;width:fit-content}
+  .crumb:hover{color:var(--indigo)}
+  .mod-head{background:linear-gradient(120deg,var(--indigo),var(--indigo-d));color:#fff;border-radius:var(--radius);padding:24px 26px;margin-bottom:18px;box-shadow:var(--shadow)}
+  .mod-head h2{font-size:1.5rem}
+  .mod-head p{opacity:.9;margin:.3em 0 0}
+  .lesson{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:16px}
+  .lesson h3{display:flex;align-items:center;gap:10px;font-size:1.15rem}
+  .lesson h4{margin:16px 0 6px;font-size:1rem;color:var(--indigo-d)}
+  .lesson ul{margin:.3em 0;padding-left:1.1em}
+  .lesson li{margin:.25em 0}
+  .pill{display:inline-block;background:#f1edfd;color:var(--indigo-d);font-weight:700;font-size:.74rem;padding:4px 11px;border-radius:999px;margin:0 6px 6px 0}
+  .callout{background:#fff8ed;border-left:4px solid var(--warn);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0;font-size:.92rem}
+  .callout.tip{background:#ecfdf6;border-color:var(--good)}
+  .callout.dang{background:#fdecef;border-color:var(--bad)}
+
+  /* Activity card */
+  .act{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:16px;border:2px solid #efeafb}
+  .act.done{border-color:#bff0e3}
+  .act-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .act-head .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0}
+  .act .type{font-size:.72rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--orange)}
+  .act.par .type{color:var(--teal)}
+  .act h3{font-size:1.12rem;margin:0}
+  .act .desc{color:var(--muted);font-size:.92rem;margin:.3em 0 14px}
+  .status-badge{margin-left:auto;font-size:.72rem;font-weight:800;padding:5px 11px;border-radius:999px;background:#f0eef7;color:var(--muted);white-space:nowrap}
+  .status-badge.ok{background:#dff7ee;color:var(--good)}
+
+  /* Quiz */
+  .q{margin:14px 0;padding:14px 16px;background:#fbfaff;border-radius:14px;border:1px solid #efeafb}
+  .q .qt{font-weight:700;margin-bottom:10px}
+  .opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid #ece8f6;border-radius:11px;
+    padding:11px 14px;margin:7px 0;font-size:.95rem;transition:.12s;display:flex;align-items:center;gap:10px}
+  .opt:hover{border-color:var(--indigo)}
+  .opt.sel{border-color:var(--indigo);background:#f3effd}
+  .opt.correct{border-color:var(--good);background:#eafaf1}
+  .opt.wrong{border-color:var(--bad);background:#fdeef0}
+  .opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid #cfc8e6;flex-shrink:0;display:grid;place-items:center}
+  .explain{font-size:.86rem;color:var(--muted);margin-top:8px;padding-left:4px;display:none}
+  .explain.show{display:block}
+
+  /* Phishing email */
+  .email{border:1px solid #e3def2;border-radius:14px;overflow:hidden;margin:12px 0}
+  .email .ehead{background:#f3f1fb;padding:10px 14px;font-size:.86rem}
+  .email .ehead b{display:block}
+  .email .ebody{padding:14px;font-size:.92rem;white-space:pre-wrap}
+  .email .efake{color:var(--indigo);text-decoration:underline}
+  .verdict{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .verdict button{flex:1;min-width:140px;padding:11px;border-radius:11px;font-weight:800;border:2px solid #ece8f6;background:#fff}
+  .verdict button.danger{color:var(--bad)} .verdict button.safe{color:var(--good)}
+  .verdict button:hover{border-color:currentColor}
+
+  /* Password meter */
+  .pw-wrap{margin:12px 0}
+  .pw-meter{height:12px;background:#ece8f6;border-radius:999px;overflow:hidden;margin:10px 0}
+  .pw-meter i{display:block;height:100%;width:0;transition:.3s}
+  .pw-checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px;font-size:.84rem}
+  .pw-checks div{display:flex;align-items:center;gap:7px;color:var(--muted)}
+  .pw-checks div.ok{color:var(--good);font-weight:700}
+
+  /* Match game */
+  .match{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+  .match .col h4{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .chip{background:#fff;border:2px solid #ece8f6;border-radius:11px;padding:10px 12px;margin:7px 0;font-size:.9rem;cursor:pointer;transition:.12s}
+  .chip:hover{border-color:var(--indigo)}
+  .chip.sel{border-color:var(--indigo);background:#f3effd}
+  .chip.matched{border-color:var(--good);background:#eafaf1;cursor:default;opacity:.85}
+
+  /* Flashcards */
+  .fc{perspective:1000px;height:150px;margin:10px 0;cursor:pointer}
+  .fc-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .fc.flip .fc-inner{transform:rotateY(180deg)}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:16px;display:grid;place-items:center;text-align:center}
+  .fc-front{background:linear-gradient(135deg,var(--indigo),var(--indigo-d));color:#fff;font-weight:800;font-size:1.1rem}
+  .fc-back{background:#fbfaff;border:2px solid #efeafb;transform:rotateY(180deg);font-size:.9rem}
+  .fc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+
+  /* Reflection / textarea activities */
+  .reflect-q{font-weight:700;margin:14px 0 4px;display:flex;gap:8px}
+  .reflect-q .n{background:var(--teal);color:#fff;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;flex-shrink:0}
+
+  .act-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn-act{background:linear-gradient(135deg,var(--orange),#ff9a5a);color:#fff;padding:11px 22px;border-radius:11px;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+  .act.par .btn-act{background:linear-gradient(135deg,var(--teal),#3ccabb)}
+  .btn-act:hover{filter:brightness(1.06)}
+  .btn-sec{background:#f1edfd;color:var(--indigo-d);padding:11px 18px;border-radius:11px;font-weight:700}
+  .score-line{margin-top:12px;font-weight:800;display:none}
+  .score-line.show{display:block}
+
+  /* Dashboard (teacher) */
+  .dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:16px 0}
+  .stat{background:#fff;border-radius:16px;padding:18px;box-shadow:var(--shadow);text-align:center}
+  .stat .v{font-size:1.9rem;font-weight:800;color:var(--indigo)}
+  .stat .l{font-size:.8rem;color:var(--muted);font-weight:700}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+  th,td{padding:11px 14px;text-align:left;font-size:.88rem;border-bottom:1px solid #f0edf8}
+  th{background:#f6f3fe;font-weight:800;color:var(--indigo-d)}
+  tr:last-child td{border-bottom:none}
+  .seg{display:inline-flex;background:#f0edf8;border-radius:999px;padding:4px;gap:4px;margin-bottom:12px}
+  .seg button{padding:8px 16px;border-radius:999px;font-weight:700;background:transparent;color:var(--muted)}
+  .seg button.on{background:#fff;color:var(--indigo);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);
+    color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;box-shadow:var(--shadow);transition:.35s;z-index:99;opacity:0}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+  .foot{text-align:center;color:var(--muted);font-size:.78rem;padding:30px 10px}
+  @media(max-width:560px){.match{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" fill="#fff"/><path d="M9 12l2 2 4-4" stroke="#5b2be0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>Cittadini Digitali<small>Cybersicurezza &amp; cittadinanza · scuola e famiglia</small></div>
+  </div>
+  <div class="spacer"></div>
+  <div id="userArea"></div>
+</div>
+
+<div class="wrap">
+  <!-- HOME / ROLE SELECTION -->
+  <section id="view-home">
+    <div class="hero">
+      <h1>Il tuo percorso di cittadinanza digitale</h1>
+      <p class="lead">Un'unica app, due strade. Gli <b>studenti</b> imparano facendo con attività pratiche. I <b>genitori</b> riflettono e accompagnano. I progressi si registrano automaticamente.</p>
+    </div>
+    <div class="roles">
+      <div class="role-card rc-stud" onclick="chooseRole('studente')">
+        <div class="ic">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 5-9 5-9-5 9-5z" fill="#fff"/><path d="M6 10v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Sono uno Studente</h3>
+        <p>Mettiti alla prova con quiz, simulazioni anti-phishing, laboratori di fact-checking e sfide pratiche.</p>
+        <span class="tag">Quiz interattivi</span><span class="tag">Simulazioni</span><span class="tag">Laboratori</span>
+        <div><span class="go">Entra come studente
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span></div>
+      </div>
+      <div class="role-card rc-par" onclick="chooseRole('genitore')">
+        <div class="ic">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" fill="#fff"/><circle cx="16" cy="9" r="2.4" fill="#fff"/><path d="M3 19c0-3 2.5-5 5-5s5 2 5 5M13 19c0-2.3 1.8-4 3.5-4S20 16.7 20 19" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Sono un Genitore</h3>
+        <p>Attività di riflessione, patti digitali familiari e strumenti per dialogare con i tuoi figli sul mondo online.</p>
+        <span class="tag">Riflessioni</span><span class="tag">Patto familiare</span><span class="tag">Dialogo</span>
+        <div><span class="go">Entra come genitore
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span></div>
+      </div>
+    </div>
+    <div class="mini-access">
+      <button onclick="openDashboard()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" fill="#5b2be0"/><rect x="14" y="3" width="7" height="5" rx="1.5" fill="#10b6a8"/><rect x="14" y="11" width="7" height="10" rx="1.5" fill="#5b2be0"/><rect x="3" y="15" width="7" height="6" rx="1.5" fill="#10b6a8"/></svg>
+        Dashboard Docente
+      </button>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="view-login" class="hidden"></section>
+
+  <!-- MODULES OVERVIEW -->
+  <section id="view-modules" class="hidden"></section>
+
+  <!-- MODULE DETAIL -->
+  <section id="view-module" class="hidden"></section>
+
+  <!-- DASHBOARD -->
+  <section id="view-dashboard" class="hidden"></section>
+
+  <div class="foot">
+    Realizzato a partire dagli appunti del corso <b>«Educazione alla cybersicurezza e cittadinanza digitale»</b> · Scuola Futura.<br>
+    I dati di avanzamento vengono salvati sul dispositivo e, se configurato, sincronizzati su Google Sheet.
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — Incolla qui l'URL della tua Web App di Apps Script
+   (vedi ISTRUZIONI.md). Lascia '' per usare solo il salvataggio locale.
+============================================================ */
+const CONFIG = {
+  SHEET_ENDPOINT: '', // es: 'https://script.google.com/macros/s/AKfyc.../exec'
+  DASHBOARD_PIN: '1234' // PIN per aprire la Dashboard Docente
+};
+</script>
+<script id="appdata">
+/* ICONE SVG riutilizzabili */
+const ICON = {
+  globe:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#5b2be0" stroke-width="2"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke="#5b2be0" stroke-width="1.6"/></svg>',
+  shield:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 2.5V11c0 4.5-3 7.5-7 9.5-4-2-7-5-7-9.5V5.5L12 3z" stroke="#5b2be0" stroke-width="2" fill="#f1edfd"/><path d="M9 12l2 2 4-4" stroke="#5b2be0" stroke-width="2" stroke-linecap="round"/></svg>',
+  people:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#5b2be0" stroke-width="2"/><circle cx="16.5" cy="9" r="2.2" stroke="#5b2be0" stroke-width="1.8"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5M14.5 19c0-2 1.3-3.6 3-3.6S20.5 17 20.5 19" stroke="#5b2be0" stroke-width="2" stroke-linecap="round"/></svg>',
+  book:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 5c2-1 5-1 8 0v14c-3-1-6-1-8 0V5z" stroke="#5b2be0" stroke-width="2" fill="#f1edfd"/><path d="M20 5c-2-1-5-1-8 0v14c3-1 6-1 8 0V5z" stroke="#5b2be0" stroke-width="2"/></svg>',
+  quiz:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#c2410c" stroke-width="2"/><path d="M9.5 9.5c0-1.4 1.1-2.5 2.5-2.5s2.5 1 2.5 2.3c0 1.8-2.5 1.9-2.5 3.7" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="#c2410c"/></svg>',
+  hook:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M16 4v8a4 4 0 11-4-4" stroke="#c2410c" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="16" cy="4" r="1.6" fill="#c2410c"/></svg>',
+  key:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="4" stroke="#c2410c" stroke-width="2"/><path d="M11 11l8 8M16 16l2-2M18 18l2-2" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/></svg>',
+  search:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="10" r="6" stroke="#c2410c" stroke-width="2"/><path d="M15 15l5 5" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/></svg>',
+  heart:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.5-7-9.5A3.7 3.7 0 0112 8a3.7 3.7 0 017 2.5C19 15.5 12 20 12 20z" stroke="#c2410c" stroke-width="2" stroke-linejoin="round"/></svg>',
+  help:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 5h14v10H9l-4 4V5z" stroke="#c2410c" stroke-width="2" stroke-linejoin="round" fill="none"/></svg>',
+  cards:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="12" height="14" rx="2" stroke="#c2410c" stroke-width="2"/><path d="M8 4h10a2 2 0 012 2v10" stroke="#c2410c" stroke-width="2"/></svg>',
+  think:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 014 10.5V16H8v-2.5A6 6 0 0112 3z" stroke="#0b756b" stroke-width="2"/><path d="M9 19h6M10 21h4" stroke="#0b756b" stroke-width="2" stroke-linecap="round"/></svg>',
+  pact:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7l5-3 6 2 5-2v12l-5 2-6-2-5 3V7z" stroke="#0b756b" stroke-width="2" stroke-linejoin="round"/></svg>',
+  chat:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v10H10l-4 4V5z" stroke="#0b756b" stroke-width="2" stroke-linejoin="round"/></svg>',
+  list:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M8 6h12M8 12h12M8 18h12" stroke="#0b756b" stroke-width="2" stroke-linecap="round"/><circle cx="4" cy="6" r="1.4" fill="#0b756b"/><circle cx="4" cy="12" r="1.4" fill="#0b756b"/><circle cx="4" cy="18" r="1.4" fill="#0b756b"/></svg>',
+  check:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+const MODULES = [];
+
+/* ============ MODULO 1 — VIVERE ONLIFE ============ */
+MODULES.push({
+  id:'m1', num:1, color:'#5b2be0', icon:ICON.globe,
+  title:'Vivere onlife', subtitle:'Contesto, rischi e opportunità del mondo connesso',
+  lesson:`
+    <h3>${ICON.globe} Che cosa significa vivere «onlife»</h3>
+    <p>Oggi non esiste più un confine netto tra vita <i>online</i> e vita <i>offline</i>: viviamo <b>onlife</b>, immersi in una realtà dove il digitale è parte di studio, relazioni, gioco e informazione. Essere cittadini competenti significa saper cogliere le <b>opportunità</b> della rete riconoscendone i <b>rischi</b>.</p>
+    <h4>Le competenze digitali (DigComp 2.2)</h4>
+    <p>Il quadro europeo <b>DigComp 2.2</b> definisce 5 aree di competenza del cittadino digitale:</p>
+    <ul>
+      <li><b>Alfabetizzazione su informazioni e dati</b> — cercare, valutare, gestire le informazioni.</li>
+      <li><b>Comunicazione e collaborazione</b> — interagire e condividere in modo responsabile.</li>
+      <li><b>Creazione di contenuti digitali</b> — produrre e rielaborare, nel rispetto del copyright.</li>
+      <li><b>Sicurezza</b> — proteggere dispositivi, dati personali, salute e ambiente.</li>
+      <li><b>Risolvere problemi</b> — usare il digitale in modo creativo per bisogni reali.</li>
+    </ul>
+    <div class="callout dang">In Italia il livello di competenze digitali è tra i più bassi d'Europa: l'<b>analfabetismo digitale</b> ha costi economici e sociali concreti. Colmare questo divario è una sfida educativa, non solo tecnica.</div>
+    <h4>Opportunità e rischi</h4>
+    <p><span class="pill">+ accesso al sapere</span><span class="pill">+ partecipazione</span><span class="pill">+ creatività</span><span class="pill">+ relazioni</span></p>
+    <p><span class="pill">– disinformazione</span><span class="pill">– dipendenza</span><span class="pill">– furto dati</span><span class="pill">– cyberbullismo</span></p>
+  `,
+  student:[
+    { id:'m1s1', type:'quiz', icon:ICON.quiz, title:'Quiz: Quanto sei onlife?',
+      desc:'Verifica le tue conoscenze sul mondo connesso e sulle competenze digitali.',
+      questions:[
+        {q:'Cosa significa vivere «onlife»?', options:['Stare sempre connessi a internet','Una vita in cui online e offline si fondono','Usare solo i social network','Lavorare da remoto'], correct:1, explain:'Onlife indica la fusione tra esperienza digitale e fisica nella vita quotidiana.'},
+        {q:'Quante sono le aree di competenza del quadro DigComp 2.2?', options:['3','5','8','10'], correct:1, explain:'DigComp 2.2 individua 5 aree di competenza digitale del cittadino.'},
+        {q:'Quale NON è un\'area DigComp?', options:['Sicurezza','Creazione di contenuti','Programmazione di videogiochi','Comunicazione e collaborazione'], correct:2, explain:'Le aree riguardano competenze trasversali del cittadino, non lo sviluppo di videogiochi.'},
+        {q:'L\'analfabetismo digitale in Italia è...', options:['Un problema risolto','Tra i più bassi d\'Europa come competenze','Solo un problema degli anziani','Irrilevante per l\'economia'], correct:1, explain:'L\'Italia è agli ultimi posti in Europa per competenze digitali, con costi economici e sociali.'}
+      ]},
+    { id:'m1s2', type:'reflect', icon:ICON.search, title:'La mia impronta digitale',
+      desc:'Una piccola indagine pratica su ciò che lasci in rete.',
+      prompts:[
+        'Cerca il tuo nome e cognome su un motore di ricerca: che cosa appare? Scrivi qui cosa hai trovato (foto, profili, nulla...).',
+        'Elenca 3 informazioni personali che hai pubblicato online nell\'ultima settimana (anche storie/stati).',
+        'Quali di queste informazioni potrebbero essere usate da uno sconosciuto? Spiega perché.'
+      ]}
+  ],
+  parent:[
+    { id:'m1p1', type:'reflect', icon:ICON.think, title:'Riflessione: il modello che offro',
+      desc:'I figli imparano osservando. Fermati a riflettere sulle tue abitudini digitali.',
+      prompts:[
+        'Quante ore al giorno passo io stesso/a davanti a uno schermo? In quali momenti (a tavola, prima di dormire...)?',
+        'Che esempio di uso del digitale offro a mio/a figlio/a senza accorgermene?',
+        'Qual è un\'abitudine digitale familiare che vorrei migliorare nel prossimo mese?'
+      ]},
+    { id:'m1p2', type:'pact', icon:ICON.pact, title:'Primo passo del Patto Digitale Familiare',
+      desc:'Costruisci con la tua famiglia alcune regole condivise di partenza.',
+      items:[
+        'Stabiliamo orari/zone "senza schermo" (es. a tavola, in camera la notte).',
+        'Decidiamo insieme quali app e contenuti sono adatti all\'età.',
+        'Ci raccontiamo qualcosa di bello e qualcosa di strano visto online ogni settimana.',
+        'Gli adulti rispettano le stesse regole che chiedono ai figli.'
+      ]}
+  ]
+});
+
+/* ============ MODULO 2 — SICUREZZA DIGITALE ============ */
+MODULES.push({
+  id:'m2', num:2, color:'#e23d52', icon:ICON.shield,
+  title:'Sicurezza digitale', subtitle:'Minacce online e come difendersi',
+  lesson:`
+    <h3>${ICON.shield} Proteggere la propria identità digitale</h3>
+    <p>Difendere i dati personali da accessi non autorizzati e mantenere il controllo su come vengono raccolti e condivisi è il cuore della sicurezza digitale. Ecco le <b>minacce più comuni</b>:</p>
+    <h4>Tecniche e minacce</h4>
+    <ul>
+      <li><b>Phishing</b> — messaggi falsi (email, SMS «smishing», telefonate «vishing») che imitano enti ufficiali per rubare credenziali o dati.</li>
+      <li><b>Malware</b> — virus, trojan, <b>spyware/keylogger</b>, <b>ransomware</b> (bloccano i file e chiedono un riscatto), botnet.</li>
+      <li><b>Social engineering</b> — manipolazione psicologica: pretexting, baiting (chiavette USB «perdute»), quiz-trappola.</li>
+      <li><b>Furto d'identità</b> e <b>data breach</b> — violazioni che espongono grandi archivi di dati.</li>
+      <li><b>Deepfake</b> — audio/video manipolati con l'IA; <b>doxing</b> — diffusione non autorizzata di dati personali.</li>
+    </ul>
+    <h4>Buone pratiche di protezione</h4>
+    <div class="callout tip">
+      <b>Password robuste</b> (lunghe, uniche) · <b>Password manager</b> · <b>Autenticazione a due fattori (2FA)</b> · <b>Aggiornamenti</b> regolari · attenzione al phishing · <b>backup</b> periodici · uso consapevole dei social.
+    </div>
+  `,
+  student:[
+    { id:'m2s1', type:'phishing', icon:ICON.hook, title:'Phishing Detective',
+      desc:'Esamina ogni email: è una truffa o è legittima? Poi scopri gli indicatori di rischio.',
+      emails:[
+        { from:'support@banca-safe.com', subject:'URGENTE: il tuo conto è stato sospeso!',
+          body:'Gentile cliente,\nabbiamo rilevato un accesso sospetto al suo conto online.\nClicchi subito sul link per verificare la sua identità:\n[[www.bancasicura-verify.it]]\nSe non conferma entro 24 ore, il conto verrà chiuso.',
+          phishing:true, indicators:['Mittente generico (banca-safe.com non corrisponde alla banca)','Pressione psicologica: "entro 24 ore"','Link con dominio falso','Errore linguistico: "Clicchi subito"'] },
+        { from:'noreply@deliveryexpress-support.com', subject:'Il tuo pacco non può essere consegnato',
+          body:'Ciao,\nil corriere non ha potuto consegnarti il pacco perché mancano informazioni sull\'indirizzo.\nPer riceverlo, conferma i tuoi dati di pagamento cliccando qui:\n[[Aggiorna indirizzo]]',
+          phishing:true, indicators:['Nessun numero d\'ordine né nome del destinatario','Richiesta di dati di pagamento non giustificata','Dominio sospetto, non un corriere reale'] },
+        { from:'comunicazioni@iclamiascuola.edu.it', subject:'Calendario colloqui di gennaio',
+          body:'Gentili studenti,\nin allegato trovate il calendario dei colloqui. Per qualsiasi dubbio rispondete a questa email o rivolgetevi in segreteria negli orari di apertura.\nCordiali saluti,\nLa Segreteria',
+          phishing:false, indicators:['Dominio ufficiale .edu.it','Nessuna richiesta di credenziali o pagamenti','Nessuna pressione o urgenza anomala'] }
+      ]},
+    { id:'m2s2', type:'password', icon:ICON.key, title:'Laboratorio Password',
+      desc:'Prova a creare una password e guarda in tempo reale quanto è robusta.' },
+    { id:'m2s3', type:'flashcards', icon:ICON.cards, title:'Glossario delle minacce',
+      desc:'Gira le carte e memorizza i termini chiave della cybersicurezza.',
+      cards:[
+        {f:'Phishing',b:'Truffa che imita messaggi ufficiali per rubare dati o credenziali.'},
+        {f:'Ransomware',b:'Malware che blocca i file e chiede un riscatto per sbloccarli.'},
+        {f:'Spyware',b:'Software che spia di nascosto attività e digitazioni (keylogger).'},
+        {f:'Social engineering',b:'Manipolazione psicologica per farsi rivelare informazioni.'},
+        {f:'Deepfake',b:'Audio/video falsi creati con l\'IA per ingannare.'},
+        {f:'Doxing',b:'Diffusione pubblica non autorizzata di dati personali per intimidire.'},
+        {f:'2FA',b:'Autenticazione a due fattori: un codice extra oltre alla password.'},
+        {f:'Data breach',b:'Violazione che espone grandi archivi di dati personali.'}
+      ]}
+  ],
+  parent:[
+    { id:'m2p1', type:'checklist', icon:ICON.list, title:'Checklist sicurezza in casa',
+      desc:'Verifica quali protezioni hai già attivato per la tua famiglia.',
+      items:[
+        'I dispositivi di casa hanno password o PIN diversi e robusti.',
+        'Ho attivato l\'autenticazione a due fattori sugli account principali.',
+        'Software e app sono aggiornati all\'ultima versione.',
+        'Abbiamo parlato in famiglia di come riconoscere email e messaggi truffa.',
+        'Facciamo backup periodici delle foto e dei documenti importanti.',
+        'Le impostazioni dei social dei figli sono su "profilo privato".'
+      ]},
+    { id:'m2p2', type:'reflect', icon:ICON.think, title:'Riflessione: e se capitasse a noi?',
+      desc:'Leggi lo scenario e immagina come reagireste come famiglia.',
+      scenario:'Tuo/a figlio/a riceve un messaggio: «Hai vinto un buono da 100€, inserisci qui i dati della carta dei tuoi genitori per riceverlo».',
+      prompts:[
+        'Come vorresti che tuo/a figlio/a reagisse di fronte a questo messaggio?',
+        'Si sentirebbe libero/a di parlartene, o avrebbe paura di essere sgridato/a? Cosa puoi fare perché si fidi di te?',
+        'Quale regola semplice potete darvi per i messaggi che chiedono dati o denaro?'
+      ]}
+  ]
+});
+
+/* ============ MODULO 3 — ESSERE CITTADINI DIGITALI ============ */
+MODULES.push({
+  id:'m3', num:3, color:'#10b6a8', icon:ICON.people,
+  title:'Essere cittadini digitali', subtitle:'Pensiero critico, rispetto e partecipazione',
+  lesson:`
+    <h3>${ICON.people} Diritti, responsabilità e spirito critico</h3>
+    <p>Essere cittadini digitali significa partecipare alla vita online con <b>consapevolezza</b>, rispettando gli altri e verificando le informazioni prima di condividerle.</p>
+    <h4>Riconoscere le fake news</h4>
+    <p>Prima di credere o condividere una notizia, chiediti:</p>
+    <ul>
+      <li><b>Chi è la fonte?</b> È autorevole e identificabile?</li>
+      <li><b>Altri siti</b> affidabili confermano la notizia?</li>
+      <li>Il <b>linguaggio</b> è emotivo o sensazionalistico?</li>
+      <li>Mancano <b>dati o prove</b> verificabili?</li>
+    </ul>
+    <div class="callout tip">Strumenti utili: siti di fact-checking (Facta, Butac, Open), <b>ricerca immagini inversa</b> (Google Immagini, TinEye), il metodo <b>SIFT</b> (Stop, Investiga la fonte, trova fonti migliori, risali al contesto).</div>
+    <h4>Contrastare i discorsi d'odio (hate speech)</h4>
+    <p>Gli <b>stereotipi</b> impliciti alimentano discriminazioni online e offline. Riconoscerli è il primo passo per usare un linguaggio <b>inclusivo e rispettoso</b>, trasformando i commenti d'odio in messaggi costruttivi.</p>
+  `,
+  student:[
+    { id:'m3s1', type:'factcheck', icon:ICON.search, title:'Laboratorio di Fact-checking',
+      desc:'Analizza questa notizia con le domande-guida e dai il tuo verdetto.',
+      news:{ title:'«SCIOCCANTE! Bere acqua e limone ogni mattina elimina QUALSIASI malattia, lo nascondono i medici!»',
+             source:'salute-naturale-news.blogspot — articolo senza autore, 4.300 condivisioni' },
+      checks:[
+        {q:'La fonte è autorevole e identificabile?', no:'Esatto: un blog anonimo senza autore non è una fonte affidabile.'},
+        {q:'Il linguaggio è neutro e informativo?', no:'Giusto: parole come "SCIOCCANTE" e "lo nascondono i medici" sono sensazionalismo.'},
+        {q:'Ci sono dati, studi o prove verificabili?', no:'Corretto: non viene citato nessuno studio scientifico.'},
+        {q:'Altri siti affidabili confermano la notizia?', no:'Bene: una bufala raramente è confermata da fonti scientifiche serie.'}
+      ],
+      verdictLabel:'Qual è il tuo verdetto finale?', fake:true,
+      fakeText:'È una FAKE NEWS. Fonte anonima, linguaggio sensazionalistico, nessuna prova: tutti segnali di disinformazione.' },
+    { id:'m3s2', type:'rewrite', icon:ICON.heart, title:'Trasforma l\'odio in rispetto',
+      desc:'Riscrivi questi commenti d\'odio in una forma inclusiva e costruttiva.',
+      items:[
+        {bad:'«Questi qui non sanno nemmeno parlare italiano, tornassero a casa loro!»'},
+        {bad:'«Le ragazze non capiscono niente di tecnologia, lascia perdere.»'},
+        {bad:'«Sei un disastro, non combinerai mai nulla nella vita.»'}
+      ]}
+  ],
+  parent:[
+    { id:'m3p1', type:'reflect', icon:ICON.chat, title:'Riflessione: parlare di ciò che si vede online',
+      desc:'Il dialogo è la migliore protezione. Rifletti su come aprirlo.',
+      prompts:[
+        'Quando è stata l\'ultima volta che ho chiesto a mio/a figlio/a cosa guarda o segue online, con curiosità e senza giudizio?',
+        'Come reagisco se mi racconta di aver visto contenuti violenti, d\'odio o falsi? La mia reazione lo/la incoraggia a confidarsi ancora?',
+        'Che cosa posso dire o fare per essere il suo "porto sicuro" quando qualcosa online lo/la mette a disagio?'
+      ]},
+    { id:'m3p2', type:'checklist', icon:ICON.list, title:'Educare allo spirito critico',
+      desc:'Quali di queste abitudini coltivate già in famiglia?',
+      items:[
+        'Prima di condividere una notizia in famiglia, ci chiediamo se è vera.',
+        'Mostro a mio/a figlio/a come si verifica una fonte o un\'immagine.',
+        'Parliamo del fatto che dietro ogni profilo c\'è una persona reale.',
+        'Discutiamo di stereotipi e linguaggio rispettoso, anche con esempi concreti.'
+      ]}
+  ]
+});
+
+/* ============ MODULO 4 — PRIVACY E A CHI CHIEDERE AIUTO ============ */
+MODULES.push({
+  id:'m4', num:4, color:'#f5a623', icon:ICON.book,
+  title:'Privacy e aiuto', subtitle:'Proteggere i dati e sapere a chi rivolgersi',
+  lesson:`
+    <h3>${ICON.book} Privacy, dati e rete di supporto</h3>
+    <p>Proteggere i dati personali è un diritto e una responsabilità. La <b>privacy by design</b> significa pensare alla protezione dei dati <i>fin dall'inizio</i> di ogni attività digitale: raccogliere solo il necessario, conservare in modo sicuro, condividere con consapevolezza.</p>
+    <h4>A chi chiedere aiuto (per studenti)</h4>
+    <ul>
+      <li><b>Messaggi/link sospetti (phishing)</b> → docente o referente informatico; se grave, Polizia Postale.</li>
+      <li><b>Cyberbullismo</b> → docente referente bullismo, Dirigente; genitori, Polizia Postale.</li>
+      <li><b>Foto/video condivisi senza permesso</b> → docente di fiducia, Dirigente; Garante Privacy, Polizia Postale.</li>
+      <li><b>Account rubato / furto identità</b> → docente informatico; Polizia Postale e gestore del servizio.</li>
+    </ul>
+    <div class="callout">Numeri utili: <b>114 Emergenza Infanzia</b> · <b>1.96.96 Telefono Azzurro</b> · <b>commissariatodips.it</b> (Polizia Postale).</div>
+  `,
+  student:[
+    { id:'m4s1', type:'match', icon:ICON.help, title:'A chi chiedo aiuto?',
+      desc:'Abbina ogni situazione alla persona/ente giusto a cui rivolgerti.',
+      pairs:[
+        {a:'Ricevo un link sospetto (phishing)', b:'Docente / referente informatico'},
+        {a:'Qualcuno mi insulta online (cyberbullismo)', b:'Docente referente bullismo / Dirigente'},
+        {a:'Una mia foto è condivisa senza permesso', b:'Docente di fiducia / Garante Privacy'},
+        {a:'Il mio account è stato rubato', b:'Gestore del servizio / Polizia Postale'}
+      ]},
+    { id:'m4s2', type:'quiz', icon:ICON.quiz, title:'Quiz: Privacy e dati personali',
+      desc:'Quanto conosci i tuoi diritti e le buone pratiche sulla privacy?',
+      questions:[
+        {q:'Cosa vuol dire "minimizzazione dei dati"?', options:['Raccogliere meno dati possibile, solo quelli necessari','Comprimere i file','Cancellare i social','Usare password corte'], correct:0, explain:'Si raccolgono solo i dati strettamente necessari all\'attività.'},
+        {q:'Prima di pubblicare la foto di un amico dovrei...', options:['Pubblicarla subito','Chiedere il suo consenso','Taggare più persone possibile','Aggiungere la posizione'], correct:1, explain:'Il consenso della persona ritratta è fondamentale per rispettarne la privacy.'},
+        {q:'Se il mio account viene rubato, una buona prima mossa è...', options:['Non fare nulla','Cambiare la password e avvisare il gestore del servizio','Crearne uno nuovo e basta','Pubblicare un avviso pubblico'], correct:1, explain:'Recuperare l\'accesso, cambiare password e segnalare al servizio limita i danni.'}
+      ]}
+  ],
+  parent:[
+    { id:'m4p1', type:'checklist', icon:ICON.list, title:'Checklist Privacy della famiglia',
+      desc:'Una versione "casa" della checklist Privacy by Design.',
+      items:[
+        'So quali dati dei miei figli circolano online (foto, scuola, sport...).',
+        'Ho impostato profili privati e limitato la geolocalizzazione.',
+        'Chiedo il consenso prima di pubblicare foto dei miei figli (e di altri bambini).',
+        'Conosco a chi rivolgermi a scuola (referente, DPO, Dirigente) in caso di problemi.',
+        'Abbiamo salvato i numeri utili: 114, 19696, Polizia Postale.'
+      ]},
+    { id:'m4p2', type:'pact', icon:ICON.pact, title:'Patto Digitale Familiare — versione completa',
+      desc:'Firmate insieme un patto che protegga tutti. Spunta gli impegni che adottate.',
+      items:[
+        'Chiediamo sempre il permesso prima di pubblicare foto degli altri.',
+        'Non condividiamo password, indirizzo o dati personali con sconosciuti.',
+        'Se qualcosa online ci mette a disagio, ne parliamo in famiglia senza paura.',
+        'Verifichiamo le notizie prima di condividerle.',
+        'Rispettiamo gli orari "senza schermo" decisi insieme.',
+        'Sappiamo a chi chiedere aiuto (scuola, Polizia Postale, numeri utili).'
+      ]}
+  ]
+});
+</script>
+<script id="applogic">
+/* ===================== STATO ===================== */
+let ROLE=null, USER=null, PROGRESS={};
+const RT={}; // stato runtime delle attività
+const ALL_ACTS={}; // registry id -> {act, mod}
+MODULES.forEach(m=>{
+  (m.student||[]).forEach(a=>ALL_ACTS[a.id]={act:a,mod:m,track:'studente'});
+  (m.parent||[]).forEach(a=>ALL_ACTS[a.id]={act:a,mod:m,track:'genitore'});
+});
+const totalCount = r => MODULES.reduce((n,m)=>n+((r==='studente'?m.student:m.parent)||[]).length,0);
+
+function storeKey(){ return 'cd::'+ROLE+'::'+(USER?USER.name.toLowerCase().trim():'')+'::'+(USER?USER.classe.toLowerCase().trim():''); }
+function saveProgress(){ try{ localStorage.setItem(storeKey(), JSON.stringify(PROGRESS)); }catch(e){} }
+function loadProgress(){ try{ PROGRESS=JSON.parse(localStorage.getItem(storeKey())||'{}'); }catch(e){ PROGRESS={}; } }
+
+/* ===================== NAVIGAZIONE ===================== */
+function showView(id){
+  ['home','login','modules','module','dashboard'].forEach(v=>{
+    document.getElementById('view-'+v).classList.toggle('hidden', v!==id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderUserArea(){
+  const a=document.getElementById('userArea');
+  if(!USER){ a.innerHTML=''; return; }
+  a.innerHTML='<div class="userchip"><span><span class="role">'+(ROLE==='studente'?'Studente':'Genitore')+'</span>'+esc(USER.name)+'</span></div>'+
+    '<button class="btn-ghost" onclick="logout()" style="margin-left:8px">Esci</button>';
+}
+function logout(){ ROLE=null; USER=null; PROGRESS={}; renderUserArea(); showView('home'); }
+
+/* ===================== LOGIN ===================== */
+function chooseRole(role){
+  ROLE=role;
+  const stud=role==='studente';
+  const accent=stud?'#ff7a3d':'#10b6a8';
+  document.getElementById('view-login').innerHTML=
+   '<div class="crumb" onclick="showView(\'home\')">&larr; Torna alla scelta</div>'+
+   '<div class="panel">'+
+     '<h2>'+(stud?ICON.people:ICON.people)+' Accesso '+(stud?'Studente':'Genitore')+'</h2>'+
+     '<p class="hint">Inserisci i tuoi dati: serviranno a salvare i tuoi progressi e a farli vedere all\'insegnante.</p>'+
+     '<label>'+(stud?'Nome e cognome':'Nome del genitore')+'</label>'+
+     '<input id="inName" placeholder="'+(stud?'Es. Giulia Rossi':'Es. Maria Bianchi')+'" />'+
+     '<label>'+(stud?'Classe':'Classe del/la figlio/a')+'</label>'+
+     '<input id="inClasse" placeholder="Es. 2A" />'+
+     '<button class="btn-primary" style="background:linear-gradient(135deg,'+accent+',#ffb37a)" onclick="doLogin()">Inizia il percorso '+
+       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+   '</div>';
+  showView('login');
+  setTimeout(()=>document.getElementById('inName').focus(),100);
+}
+function doLogin(){
+  const n=document.getElementById('inName').value.trim();
+  const c=document.getElementById('inClasse').value.trim();
+  if(!n||!c){ toast('Inserisci nome e classe per continuare'); return; }
+  USER={name:n, classe:c};
+  loadProgress();
+  renderUserArea();
+  renderModules();
+  showView('modules');
+}
+
+/* ===================== PANORAMICA MODULI ===================== */
+function progStats(){
+  const acts=Object.keys(ALL_ACTS).filter(id=>ALL_ACTS[id].track===ROLE);
+  const done=acts.filter(id=>PROGRESS[id]&&PROGRESS[id].done).length;
+  return {done, total:acts.length, pct: acts.length?Math.round(done/acts.length*100):0};
+}
+function modStats(m){
+  const acts=(ROLE==='studente'?m.student:m.parent)||[];
+  const done=acts.filter(a=>PROGRESS[a.id]&&PROGRESS[a.id].done).length;
+  return {done, total:acts.length, pct: acts.length?Math.round(done/acts.length*100):0};
+}
+function renderModules(){
+  const s=progStats();
+  let h='<div class="welcome">'+
+     '<div class="progress-ring" style="--p:'+s.pct+'"><span>'+s.pct+'%</span></div>'+
+     '<div><div class="big">Ciao '+esc(USER.name.split(' ')[0])+'! 👋</div>'+
+       '<div style="color:var(--muted)">Hai completato <b>'+s.done+' di '+s.total+'</b> attività del percorso '+(ROLE==='studente'?'studente':'genitore')+'.</div></div>'+
+     '<div class="spacer"></div>'+
+     (CONFIG.SHEET_ENDPOINT?'<div class="status-badge ok">Sincronizzato ☁</div>':'<div class="status-badge">Salvataggio locale</div>')+
+   '</div>';
+  h+='<div class="modules">';
+  MODULES.forEach(m=>{
+    const ms=modStats(m);
+    h+='<div class="mod-card" style="border-top-color:'+m.color+'" onclick="openModule(\''+m.id+'\')">'+
+        '<div class="num">'+m.num+'</div>'+
+        '<div class="ic">'+m.icon+'</div>'+
+        '<h3>'+esc(m.title)+'</h3>'+
+        '<p>'+esc(m.subtitle)+'</p>'+
+        '<div class="bar"><i style="width:'+ms.pct+'%"></i></div>'+
+        '<div class="meta"><span>'+ms.done+'/'+ms.total+' attività</span><span>'+(ms.pct===100?'Completato ✓':ms.pct+'%')+'</span></div>'+
+       '</div>';
+  });
+  h+='</div>';
+  document.getElementById('view-modules').innerHTML=h;
+}
+
+/* ===================== DETTAGLIO MODULO ===================== */
+function openModule(modId){
+  const m=MODULES.find(x=>x.id===modId);
+  const acts=(ROLE==='studente'?m.student:m.parent)||[];
+  let h='<div class="crumb" onclick="backToModules()">&larr; Tutti i moduli</div>'+
+    '<div class="mod-head" style="background:linear-gradient(120deg,'+m.color+',#2b1b6e)">'+
+      '<h2>Modulo '+m.num+' · '+esc(m.title)+'</h2><p>'+esc(m.subtitle)+'</p></div>'+
+    '<div class="lesson">'+m.lesson+'</div>'+
+    '<h3 style="margin:18px 4px 4px">'+(ROLE==='studente'?'🎯 Attività pratiche':'💭 Attività di riflessione')+'</h3>';
+  acts.forEach(a=>{ h+=renderActivity(a, ROLE==='genitore'); });
+  document.getElementById('view-module').innerHTML=h;
+  showView('module');
+  acts.forEach(a=>{ if(typeof initActivity==='function') initActivity(a); });
+}
+function backToModules(){ renderModules(); showView('modules'); }
+
+/* ===================== UTILITY ===================== */
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600); }
+
+/* segna attività completata + salva + sincronizza */
+function markDone(id, scoreText){
+  if(!PROGRESS[id]) PROGRESS[id]={};
+  const already=PROGRESS[id].done;
+  PROGRESS[id].done=true;
+  if(scoreText) PROGRESS[id].score=scoreText;
+  PROGRESS[id].ts=new Date().toISOString();
+  saveProgress();
+  const reg=ALL_ACTS[id];
+  syncRecord({ role:ROLE, name:USER.name, classe:USER.classe, modulo:reg.mod.num+' - '+reg.mod.title,
+    attivita:reg.act.title, punteggio:scoreText||'completata', timestamp:PROGRESS[id].ts });
+  const badge=document.getElementById('badge-'+id);
+  if(badge){ badge.className='status-badge ok'; badge.textContent=(scoreText?scoreText+' · ':'')+'Completata ✓'; }
+  const card=document.getElementById('act-'+id);
+  if(card) card.classList.add('done');
+  if(!already) toast('Attività completata! 🎉');
+}
+
+/* invio al Google Sheet via Apps Script */
+function syncRecord(rec){
+  if(!CONFIG.SHEET_ENDPOINT) return;
+  try{
+    fetch(CONFIG.SHEET_ENDPOINT,{ method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(rec) });
+  }catch(e){ /* offline: resta salvato in locale */ }
+}
+
+/* ===================== RENDER ATTIVITÀ ===================== */
+const TYPE_LABEL={quiz:'Quiz',phishing:'Simulazione',password:'Laboratorio',flashcards:'Ripasso',
+  checklist:'Checklist',match:'Abbinamento',factcheck:'Laboratorio',rewrite:'Sfida creativa',
+  reflect:'Riflessione',pact:'Patto familiare'};
+
+function actShell(a,isPar,body){
+  const p=PROGRESS[a.id]||{};
+  const doneCls=p.done?' done':'';
+  const badge=p.done?('<div class="status-badge ok" id="badge-'+a.id+'">'+(p.score?esc(p.score)+' · ':'')+'Completata ✓</div>')
+                    :('<div class="status-badge" id="badge-'+a.id+'">Da completare</div>');
+  return '<div class="act'+(isPar?' par':'')+doneCls+'" id="act-'+a.id+'">'+
+    '<div class="act-head"><div class="ic" style="background:'+(isPar?'#e3faf6':'#fff1e8')+'">'+a.icon+'</div>'+
+      '<div><div class="type">'+(TYPE_LABEL[a.type]||'')+'</div><h3>'+esc(a.title)+'</h3></div>'+badge+'</div>'+
+    '<div class="desc">'+esc(a.desc)+'</div>'+body+'</div>';
+}
+
+function renderActivity(a,isPar){
+  switch(a.type){
+    case 'quiz': return actShell(a,isPar, a.questions.map((q,qi)=>
+      '<div class="q"><div class="qt">'+(qi+1)+'. '+esc(q.q)+'</div>'+
+      q.options.map((o,oi)=>'<button class="opt" id="opt-'+a.id+'-'+qi+'-'+oi+'" onclick="quizAnswer(\''+a.id+'\','+qi+','+oi+')"><span class="dot"></span>'+esc(o)+'</button>').join('')+
+      '<div class="explain" id="exp-'+a.id+'-'+qi+'">'+esc(q.explain)+'</div></div>').join('')+
+      '<div class="score-line" id="score-'+a.id+'"></div>');
+
+    case 'phishing': return actShell(a,isPar, a.emails.map((e,ei)=>
+      '<div class="email"><div class="ehead"><b>Da: '+esc(e.from)+'</b>Oggetto: '+esc(e.subject)+'</div>'+
+      '<div class="ebody">'+e.body.split('\n').map(l=>esc(l).replace(/\[\[(.+?)\]\]/g,'<span class="efake">$1</span>')).join('<br>')+'</div></div>'+
+      '<div class="verdict"><button class="danger" onclick="phishVerdict(\''+a.id+'\','+ei+',true)">🎣 È phishing</button>'+
+      '<button class="safe" onclick="phishVerdict(\''+a.id+'\','+ei+',false)">✅ È legittima</button></div>'+
+      '<div class="explain" id="ind-'+a.id+'-'+ei+'"></div>').join('')+
+      '<div class="score-line" id="score-'+a.id+'"></div>');
+
+    case 'password': return actShell(a,isPar,
+      '<div class="pw-wrap"><input id="pw-'+a.id+'" placeholder="Scrivi qui una password di prova..." oninput="pwCheck(\''+a.id+'\',this.value)" />'+
+      '<div class="pw-meter"><i id="pwbar-'+a.id+'"></i></div>'+
+      '<div id="pwlabel-'+a.id+'" style="font-weight:800;margin-bottom:8px;color:var(--muted)">Inizia a digitare</div>'+
+      '<div class="pw-checks">'+
+        ['len','Almeno 12 caratteri','upper','Maiuscole e minuscole','num','Almeno un numero','sym','Almeno un simbolo']
+        .reduce((acc,v,i,arr)=>{ if(i%2===0) acc.push('<div id="chk-'+a.id+'-'+v+'"><span>○</span> '+arr[i+1]+'</div>'); return acc;},[]).join('')+
+      '</div><div class="callout tip" style="margin-top:12px">Usa una <b>frase-passhrase</b> facile da ricordare ma lunga, es. <i>Gatto!Blu_Corre7Veloce</i>. Mai la stessa password su più siti.</div></div>');
+
+    case 'flashcards': return actShell(a,isPar,
+      '<div class="fc-grid">'+a.cards.map((c,ci)=>
+        '<div class="fc" onclick="this.classList.toggle(\'flip\')"><div class="fc-inner">'+
+        '<div class="fc-face fc-front">'+esc(c.f)+'<br><small style="opacity:.7;font-weight:600">tocca per girare</small></div>'+
+        '<div class="fc-face fc-back">'+esc(c.b)+'</div></div></div>').join('')+'</div>'+
+      '<div class="act-actions"><button class="btn-act" onclick="markDone(\''+a.id+'\')">Ho ripassato tutte le carte</button></div>');
+
+    case 'checklist': return actShell(a,isPar,
+      a.items.map((it,ii)=>'<label style="display:flex;align-items:center;gap:10px;font-weight:500;margin:8px 0;cursor:pointer">'+
+        '<input type="checkbox" id="cl-'+a.id+'-'+ii+'" style="width:20px;height:20px;flex-shrink:0" /> '+esc(it)+'</label>').join('')+
+      '<div class="act-actions"><button class="'+(isPar?'btn-act':'btn-act')+'" onclick="saveChecklist(\''+a.id+'\','+a.items.length+')">Salva i miei impegni</button></div>');
+
+    case 'match': return renderMatch(a,isPar);
+
+    case 'factcheck': return actShell(a,isPar,
+      '<div class="callout" style="background:#fdecef;border-color:var(--bad)"><b>'+esc(a.news.title)+'</b><br><small>Fonte: '+esc(a.news.source)+'</small></div>'+
+      a.checks.map((c,ci)=>'<div class="q"><div class="qt">'+esc(c.q)+'</div>'+
+        '<div class="verdict"><button class="safe" onclick="fcAnswer(\''+a.id+'\','+ci+',true)">Sì</button>'+
+        '<button class="danger" onclick="fcAnswer(\''+a.id+'\','+ci+',false)">No</button></div>'+
+        '<div class="explain" id="fc-'+a.id+'-'+ci+'">'+esc(c.no)+'</div></div>').join('')+
+      '<div class="reflect-q" style="margin-top:14px"><span class="n">★</span>'+esc(a.verdictLabel)+'</div>'+
+      '<div class="verdict"><button class="danger" onclick="fcVerdict(\''+a.id+'\',true)">🚫 È una Fake News</button>'+
+      '<button class="safe" onclick="fcVerdict(\''+a.id+'\',false)">✔ È vera</button></div>'+
+      '<div class="explain" id="fcres-'+a.id+'"></div>');
+
+    case 'rewrite': return actShell(a,isPar,
+      a.items.map((it,ii)=>'<div class="q"><div class="qt" style="color:var(--bad)">💬 '+esc(it.bad)+'</div>'+
+        '<label>La tua versione rispettosa:</label><textarea id="rw-'+a.id+'-'+ii+'" placeholder="Riscrivi qui in modo inclusivo..."></textarea></div>').join('')+
+      '<div class="act-actions"><button class="btn-act" onclick="saveText(\''+a.id+'\','+a.items.length+',\'rw\')">Salva le mie riscritture</button></div>');
+
+    case 'reflect': return actShell(a,isPar,
+      (a.scenario?'<div class="callout"><b>Scenario:</b> '+esc(a.scenario)+'</div>':'')+
+      a.prompts.map((p,pi)=>'<div class="reflect-q"><span class="n">'+(pi+1)+'</span>'+esc(p)+'</div>'+
+        '<textarea id="rf-'+a.id+'-'+pi+'" placeholder="Scrivi qui la tua riflessione..."></textarea>').join('')+
+      '<div class="act-actions"><button class="btn-act" onclick="saveText(\''+a.id+'\','+a.prompts.length+',\'rf\')">Salva la riflessione</button></div>');
+
+    case 'pact': return actShell(a,isPar,
+      a.items.map((it,ii)=>'<label style="display:flex;align-items:center;gap:10px;font-weight:500;margin:8px 0;cursor:pointer">'+
+        '<input type="checkbox" id="pc-'+a.id+'-'+ii+'" style="width:20px;height:20px;flex-shrink:0" /> '+esc(it)+'</label>').join('')+
+      '<div class="act-actions"><button class="btn-act" onclick="saveChecklist(\''+a.id+'\','+a.items.length+')">✍ Firmiamo il patto</button></div>');
+
+    default: return actShell(a,isPar,'');
+  }
+}
+
+function renderMatch(a,isPar){
+  const rights=a.pairs.map((p,i)=>({b:p.b,i})).sort(()=>Math.random()-0.5);
+  let h='<div class="match"><div class="col"><h4>Situazione</h4>'+
+    a.pairs.map((p,i)=>'<div class="chip" id="ma-'+a.id+'-'+i+'" onclick="matchPick(\''+a.id+'\',\'a\','+i+')">'+esc(p.a)+'</div>').join('')+'</div>'+
+    '<div class="col"><h4>A chi rivolgersi</h4>'+
+    rights.map(r=>'<div class="chip" id="mb-'+a.id+'-'+r.i+'" onclick="matchPick(\''+a.id+'\',\'b\','+r.i+')">'+esc(r.b)+'</div>').join('')+'</div></div>'+
+    '<div class="score-line" id="score-'+a.id+'"></div>';
+  return actShell(a,isPar,h);
+}
+
+/* ---- restore testi salvati ---- */
+function initActivity(a){
+  const p=PROGRESS[a.id]; if(!p||!p.data) return;
+  if(a.type==='reflect') (a.prompts||[]).forEach((q,i)=>{ const el=document.getElementById('rf-'+a.id+'-'+i); if(el&&p.data[i]!=null) el.value=p.data[i]; });
+  if(a.type==='rewrite') (a.items||[]).forEach((q,i)=>{ const el=document.getElementById('rw-'+a.id+'-'+i); if(el&&p.data[i]!=null) el.value=p.data[i]; });
+  if(a.type==='checklist'||a.type==='pact') (a.items||[]).forEach((q,i)=>{ const el=document.getElementById((a.type==='pact'?'pc-':'cl-')+a.id+'-'+i); if(el&&p.data[i]) el.checked=true; });
+}
+
+/* ===================== HANDLER ATTIVITÀ ===================== */
+function quizAnswer(id,qi,oi){
+  RT[id]=RT[id]||{answers:{}};
+  if(RT[id].answers[qi]!=null) return;
+  const q=ALL_ACTS[id].act.questions[qi];
+  RT[id].answers[qi]=oi;
+  for(let k=0;k<q.options.length;k++){ const b=document.getElementById('opt-'+id+'-'+qi+'-'+k); b.style.pointerEvents='none';
+    if(k===q.correct) b.classList.add('correct'); }
+  if(oi!==q.correct) document.getElementById('opt-'+id+'-'+qi+'-'+oi).classList.add('wrong');
+  document.getElementById('exp-'+id+'-'+qi).classList.add('show');
+  const ans=RT[id].answers;
+  if(Object.keys(ans).length===ALL_ACTS[id].act.questions.length){
+    let sc=0; ALL_ACTS[id].act.questions.forEach((qq,j)=>{ if(ans[j]===qq.correct) sc++; });
+    const tot=ALL_ACTS[id].act.questions.length;
+    const line=document.getElementById('score-'+id);
+    line.className='score-line show'; line.style.color=sc===tot?'var(--good)':'var(--indigo)';
+    line.textContent='Punteggio: '+sc+'/'+tot+(sc===tot?' — Perfetto! 🏆':' — Riprova per migliorare!');
+    markDone(id, sc+'/'+tot);
+  }
+}
+
+function phishVerdict(id,ei,guess){
+  RT[id]=RT[id]||{done:{}};
+  if(RT[id].done[ei]) return; RT[id].done[ei]=true;
+  const e=ALL_ACTS[id].act.emails[ei];
+  const ok=(guess===e.phishing);
+  const box=document.getElementById('ind-'+id+'-'+ei);
+  box.classList.add('show');
+  box.innerHTML='<b style="color:'+(ok?'var(--good)':'var(--bad)')+'">'+(ok?'✔ Esatto! ':'✘ Attenzione. ')+
+    'Questa email '+(e.phishing?'È un tentativo di phishing.':'è legittima.')+'</b><br><b>Indicatori:</b><ul style="margin:4px 0 0;padding-left:18px">'+
+    e.indicators.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+  if(Object.keys(RT[id].done).length===ALL_ACTS[id].act.emails.length){
+    markDone(id,'completata');
+    const line=document.getElementById('score-'+id); if(line){ line.className='score-line show'; line.style.color='var(--good)'; line.textContent='Hai analizzato tutte le email! 🔍'; }
+  }
+}
+
+function pwCheck(id,val){
+  const has={ len:val.length>=12, upper:/[a-z]/.test(val)&&/[A-Z]/.test(val), num:/[0-9]/.test(val), sym:/[^A-Za-z0-9]/.test(val) };
+  let score=0; ['len','upper','num','sym'].forEach(k=>{ const el=document.getElementById('chk-'+id+'-'+k);
+    if(has[k]){ score++; el.classList.add('ok'); el.firstChild.textContent='●'; } else { el.classList.remove('ok'); el.firstChild.textContent='○'; } });
+  const pct=val?Math.min(100,(score/4)*100):0;
+  const colors=['#e23d52','#f5a623','#f5a623','#10b6a8','#16a34a'];
+  const labels=['Troppo debole','Debole','Migliorabile','Buona','Robusta 💪'];
+  const bar=document.getElementById('pwbar-'+id); bar.style.width=pct+'%'; bar.style.background=colors[score];
+  const lab=document.getElementById('pwlabel-'+id); lab.textContent=val?labels[score]:'Inizia a digitare'; lab.style.color=val?colors[score]:'var(--muted)';
+  if(score>=4 && !(PROGRESS[id]&&PROGRESS[id].done)) markDone(id,'Robusta');
+}
+
+function saveChecklist(id,n){
+  const data=[]; let c=0;
+  const pref=ALL_ACTS[id].act.type==='pact'?'pc-':'cl-';
+  for(let i=0;i<n;i++){ const el=document.getElementById(pref+id+'-'+i); data[i]=!!(el&&el.checked); if(data[i])c++; }
+  PROGRESS[id]=PROGRESS[id]||{}; PROGRESS[id].data=data; saveProgress();
+  markDone(id, c+'/'+n+' spuntati');
+}
+
+function saveText(id,n,pref){
+  const data=[]; let filled=0;
+  for(let i=0;i<n;i++){ const el=document.getElementById(pref+'-'+id+'-'+i); data[i]=el?el.value.trim():''; if(data[i])filled++; }
+  PROGRESS[id]=PROGRESS[id]||{}; PROGRESS[id].data=data; saveProgress();
+  if(filled===0){ toast('Scrivi almeno una risposta prima di salvare'); return; }
+  markDone(id, filled+'/'+n+' risposte');
+}
+
+function matchPick(id,side,idx){
+  RT[id]=RT[id]||{sel:null,matched:{}};
+  const st=RT[id]; if(st.matched[idx]&&side==='a') return;
+  const el=document.getElementById('m'+side+'-'+id+'-'+idx);
+  if(el.classList.contains('matched')) return;
+  if(!st.sel){ st.sel={side,idx,el}; el.classList.add('sel'); return; }
+  if(st.sel.side===side){ st.sel.el.classList.remove('sel'); st.sel={side,idx,el}; el.classList.add('sel'); return; }
+  // abbiamo una a e una b
+  const aIdx=side==='a'?idx:st.sel.idx, bIdx=side==='b'?idx:st.sel.idx;
+  st.sel.el.classList.remove('sel'); el.classList.remove('sel');
+  if(aIdx===bIdx){
+    document.getElementById('ma-'+id+'-'+aIdx).classList.add('matched');
+    document.getElementById('mb-'+id+'-'+bIdx).classList.add('matched');
+    st.matched[aIdx]=true; st.sel=null;
+    if(Object.keys(st.matched).length===ALL_ACTS[id].act.pairs.length){
+      const line=document.getElementById('score-'+id); line.className='score-line show'; line.style.color='var(--good)'; line.textContent='Tutti gli abbinamenti corretti! ✓';
+      markDone(id,'completato');
+    }
+  } else { st.sel=null; toast('Abbinamento errato, riprova'); }
+}
+
+function fcAnswer(id,ci,guess){
+  const correct=false; // la risposta corretta è sempre "No"
+  const box=document.getElementById('fc-'+id+'-'+ci); box.classList.add('show');
+  box.style.color=(guess===correct)?'var(--good)':'var(--bad)';
+}
+function fcVerdict(id,guess){
+  const a=ALL_ACTS[id].act; const ok=(guess===a.fake);
+  const box=document.getElementById('fcres-'+id); box.classList.add('show');
+  box.style.color=ok?'var(--good)':'var(--bad)';
+  box.innerHTML='<b>'+(ok?'✔ Verdetto corretto! ':'✘ Non proprio. ')+'</b>'+esc(a.fakeText);
+  markDone(id, ok?'corretto':'da rivedere');
+}
+
+/* ===================== DASHBOARD DOCENTE ===================== */
+function openDashboard(){
+  const pin=prompt('Inserisci il PIN docente per accedere alla dashboard:');
+  if(pin===null) return;
+  if(pin!==CONFIG.DASHBOARD_PIN){ toast('PIN errato'); return; }
+  renderDashboard(); showView('dashboard'); loadDashboardData();
+}
+let DASH_FILTER='tutti', DASH_ROWS=null;
+function renderDashboard(rows){
+  let h='<div class="crumb" onclick="showView(\'home\')">&larr; Home</div>'+
+    '<div class="mod-head"><h2>📊 Dashboard Docente</h2><p>Monitoraggio dei progressi di studenti e genitori</p></div>';
+  if(!CONFIG.SHEET_ENDPOINT){
+    h+='<div class="lesson"><h3>'+ICON.book+' Collega il Google Sheet</h3>'+
+      '<p>Per vedere i progressi di tutti, configura l\'integrazione con Google Sheet seguendo il file <b>ISTRUZIONI.md</b> e incolla l\'URL nella variabile <code>CONFIG.SHEET_ENDPOINT</code> in cima allo script.</p>'+
+      '<div class="callout">Senza configurazione, i progressi restano salvati solo sul dispositivo di ciascun utente.</div></div>';
+    document.getElementById('view-dashboard').innerHTML=h; return;
+  }
+  h+='<div id="dashBody"><p style="text-align:center;color:var(--muted)">Caricamento dati… ☁</p></div>';
+  document.getElementById('view-dashboard').innerHTML=h;
+  if(rows) fillDashboard(rows);
+}
+function loadDashboardData(){
+  if(!CONFIG.SHEET_ENDPOINT) return;
+  fetch(CONFIG.SHEET_ENDPOINT+'?action=read')
+    .then(r=>r.json()).then(d=>{ DASH_ROWS=d.rows||d||[]; fillDashboard(DASH_ROWS); })
+    .catch(e=>{ document.getElementById('dashBody').innerHTML='<div class="callout dang">Impossibile leggere i dati. Verifica l\'URL e che la Web App sia pubblicata per "Chiunque".</div>'; });
+}
+function fillDashboard(rows){
+  const body=document.getElementById('dashBody'); if(!body) return;
+  const f=DASH_FILTER;
+  const filtered=rows.filter(r=>f==='tutti'|| (r.role||r.Ruolo||'').toLowerCase().indexOf(f)>=0);
+  const norm=r=>({name:r.name||r.Nome||'', classe:r.classe||r.Classe||'', role:r.role||r.Ruolo||'',
+    modulo:r.modulo||r.Modulo||'', att:r.attivita||r.Attività||r.Attivita||'', punt:r.punteggio||r.Punteggio||'', ts:r.timestamp||r.Data||''});
+  const list=filtered.map(norm);
+  const students=new Set(list.filter(r=>r.role.toLowerCase().indexOf('stud')>=0).map(r=>r.name+'|'+r.classe));
+  const parents=new Set(list.filter(r=>r.role.toLowerCase().indexOf('genit')>=0).map(r=>r.name+'|'+r.classe));
+  let h='<div class="seg">'+
+    ['tutti','studente','genitore'].map(x=>'<button class="'+(f===x?'on':'')+'" onclick="setDashFilter(\''+x+'\')">'+(x==='tutti'?'Tutti':x==='studente'?'Studenti':'Genitori')+'</button>').join('')+
+    '</div> <button class="btn-ghost" onclick="loadDashboardData()">↻ Aggiorna</button>';
+  h+='<div class="dash-stats">'+
+    '<div class="stat"><div class="v">'+students.size+'</div><div class="l">Studenti attivi</div></div>'+
+    '<div class="stat"><div class="v">'+parents.size+'</div><div class="l">Genitori attivi</div></div>'+
+    '<div class="stat"><div class="v">'+list.length+'</div><div class="l">Attività completate</div></div>'+
+    '<div class="stat"><div class="v">'+(students.size+parents.size)+'</div><div class="l">Utenti totali</div></div></div>';
+  if(!list.length){ h+='<div class="callout">Ancora nessun dato registrato per questo filtro.</div>'; body.innerHTML=h; return; }
+  h+='<table><thead><tr><th>Nome</th><th>Classe</th><th>Ruolo</th><th>Modulo</th><th>Attività</th><th>Esito</th><th>Quando</th></tr></thead><tbody>'+
+    list.slice().reverse().map(r=>'<tr><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.classe)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.modulo)+'</td><td>'+esc(r.att)+'</td><td>'+esc(r.punt)+'</td><td>'+esc(fmtDate(r.ts))+'</td></tr>').join('')+
+    '</tbody></table>';
+  body.innerHTML=h;
+}
+function setDashFilter(f){ DASH_FILTER=f; if(DASH_ROWS) fillDashboard(DASH_ROWS); }
+function fmtDate(s){ if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleDateString('it-IT')+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+</script>
+</body>
+</html>
